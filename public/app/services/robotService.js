@@ -13,6 +13,10 @@ angular.module('robotService', [])
       return $http.get('/api/robots/');
     };
 
+    robotFactory.getByCategory = function(id) {
+      return $http.get('/api/robots/category/' + id);
+    };
+
     // create a robot
     robotFactory.create = function(robotData) {
       return $http.post('/api/robots/', robotData);

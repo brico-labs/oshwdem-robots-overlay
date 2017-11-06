@@ -5,12 +5,30 @@ angular.module('app.routes', ['ngRoute'])
 	.when('/', {
 		templateUrl: 'app/views/pages/home.html',
 		controller: 'mainController',
-		controllerAs: 'main'
+		controllerAs: 'main',
+		categoryId: 0,
+		categoryName: 'All Robots'
 	})
-	.when('/about', {
-		templateUrl: 'app/views/pages/about.html',
-		controller: 'aboutController',
-		controllerAs: 'about'
+	.when('/laberinto', {
+		templateUrl: 'app/views/pages/home.html',
+		controller: 'mainController',
+		controllerAs: 'main',
+		categoryId: 1,
+		categoryName: 'Robots Laberinto'
+	})
+	.when('/siguelineas', {
+		templateUrl: 'app/views/pages/home.html',
+		controller: 'mainController',
+		controllerAs: 'main',
+		categoryId: 2,
+		categoryName: 'Robots Siguelineas'
+	})
+	.when('/velocistas', {
+		templateUrl: 'app/views/pages/home.html',
+		controller: 'mainController',
+		controllerAs: 'main',
+		categoryId: 3,
+		categoryName: 'Robots Velocistas'
 	})
 	// get rid of the hash in the URL
 	$locationProvider.html5Mode(true);

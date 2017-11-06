@@ -21,6 +21,16 @@ module.exports = function(app, express) {
   		robot.name = req.body.name;
    		robot.category = req.body.category;
 
+      var time = {
+        "minutes": 0,
+        "seconds": 0,
+        "miliseconds": 0
+      }
+
+      robot.times.push(time);
+      robot.times.push(time);
+      robot.times.push(time);
+
   		// save the user and check for errors
   		robot.save(function(err) {
   			if (err) {
@@ -134,7 +144,13 @@ module.exports = function(app, express) {
       // use our user model to find the robot we want
       Robot.findById(req.params.robot_id, function(err, robot) {
         if (err) res.send(err);
-        robot.times = robot.times.splice(req.body.timeid, 1);
+        var time = {
+          "minutes": 0,
+          "seconds": 0,
+          "miliseconds": 0
+        }
+
+        robot.times[req.body.timeid] = time;
 
         // save the robot
         robot.save(function(err) {
@@ -144,6 +160,15 @@ module.exports = function(app, express) {
         });
       });
     });
+
+  apiRouter.route('/robots/category/:category_id')
+    .get(function(req, res){
+      Robot.find({ 'category': req.params.category_id }, function(err, robots) {
+  			if (err) res.send(err);
+  			// return those robots
+  			res.json(robots);
+  		});
+    })
 
   return apiRouter;
 }

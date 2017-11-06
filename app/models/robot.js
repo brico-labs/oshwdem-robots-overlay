@@ -18,10 +18,14 @@ var RobotExtraSchema = new Schema({
   twitter: { type: Boolean }
 });
 
-// user schema
+// robot schema
 var RobotSchema = new Schema({
   name: { type: String, required: true },
   category: { type: Number, required: true },
+  // Categories are indexed for flexibility
+  // 1 is Laberinto
+  // 2 is Siguelineas
+  // 3 is Velocistas
   times: [RobotTimeSchema],
   extra: RobotExtraSchema
 });
@@ -32,11 +36,9 @@ RobotSchema.index({ "name" : 1, "category" : 1 }, { unique : true })
 var Robot = module.exports = mongoose.model('Robot', RobotSchema);
 
 Robot.ensureIndexes(function (err) {
-  console.log('ENSURE INDEX')
   if (err) console.log(err)
 })
 
 Robot.on('index', function (err) {
-  console.log('ON INDEX')
   if (err) console.log(err)
 })
