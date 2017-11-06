@@ -6,8 +6,8 @@ three different competitions: Siguelineas, Velocistas and Laberintos.
 Requires Node to handle dependencies and run the webserver for the app and
 MongoDB to store the data.
 
-*DISCLAIMER: This app is not meant to be hosted for online use, it's not
-secured for simplicity purposes*
+**DISCLAIMER: This app is not meant to be hosted for online use, it's not
+secured for simplicity purposes**
 
 To install dependencies and get the base app running just do:
 ```
