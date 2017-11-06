@@ -1,0 +1,21 @@
+{
+  "name": "cbn-mix_n_match",
+  "description": "",
+  "main": "server.js",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "angular": "^1.5.8",
+    "angular-route": "^1.5.8",
+    "angular-animate": "^1.5.8",
+    "font-awesome": "fontawesome#^4.6.3"
+  }
+}
