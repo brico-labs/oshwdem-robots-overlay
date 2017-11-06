@@ -1,5 +1,13 @@
-# triangular-seed
-Base Angular Project (MEAN + LESS + Bower + Gulp) that covers a bit more my needs than angular-seed
+# Oshwdem Robot Overlay
+
+Webapp to manage and track robot scores for Oshwdem 2017, allows tracking
+three different competitions: Siguelineas, Velocistas and Laberintos.
+
+Requires Node to handle dependencies and run the webserver for the app and
+MongoDB to store the data.
+
+*DISCLAIMER: This app is not meant to be hosted for online use, it's not
+secured for simplicity purposes*
 
 To install dependencies and get the base app running just do:
 ```
@@ -11,3 +19,5 @@ If it doesn't work maybe you need nodemon, bower and gulp instaleld and in your 
 ```
 npm install -g nodemon bower gulp
 ```
+Even though the app is not meant for online use, config.js should be changed
+when running the app to avoid running into problems at the local network.
