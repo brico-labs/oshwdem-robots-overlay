@@ -1,32 +1,52 @@
-<div id="pre-table">
-  <div class="pull-left">
-    <h3>{{ main.categoryName }}</h3>
-  </div>
-  <div class="pull-right">
-    <a class='btn btn-default' href="#">New Robot</a>
-  </div>
-</div>
-<table class='table table-striped'>
-  <thead>
-    <th>Name</th>
-    <th>Category</th>
-    <th colspan="3">Times</th>
-    <th colspan="2">Actions</th>
-  </thead>
-  <tbody>
-    <tr ng-repeat="robot in main.robots">
-      <td>{{ robot.name }}</td>
-      <td>{{ main.prettyCategory(robot.category) }}</td>
-      <td ng-repeat="time in robot.times">
-        {{ main.prettyTime(time) }}
-      </td>
-      <td><a href="#" title="Edit {{ robot.name }}"><i class="fa fa-pencil-square"></i></a></td>
-      <td><a href="#" title="Delete {{ robot.name }}"><i class="fa fa-trash"></i></a></td>
-    </tr>
-  </tbody>
-</table>
-<div id="post-table">
-  <div class="pull-right">
-    <a class='btn btn-default' href="#">New Robot</a>
-  </div>
-</div>
+<body class="container" ng-app="myApp">
+  <header>
+    <nav class="navbar navbar-default">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Oshdewm Robot Management</a>
+      </div>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="/laberinto"><i class="fa fa-external-link-square"></i> Laberinto</a></li>
+        <li><a href="/siguelineas"><i class="fa fa-window-minimize"></i> Siguelineas</a></li>
+        <li><a href="/velocistas"><i class="fa fa-bolt"></i> Velocistas</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div id="content-views">
+      <div id="pre-table">
+        <div class="pull-left">
+          <h3>{{ main.categoryName }}</h3>
+        </div>
+        <div class="pull-right">
+          <a class='btn btn-default' href="#">New Robot</a>
+        </div>
+      </div>
+      <table class='table table-striped'>
+        <thead>
+          <th>Name</th>
+          <th>Category</th>
+          <th colspan="3">Times</th>
+          <th colspan="2">Actions</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="robot in main.robots">
+            <td>{{ robot.name }}</td>
+            <td>{{ main.prettyCategory(robot.category) }}</td>
+            <td ng-repeat="time in robot.times">
+              {{ main.prettyTime(time) }}
+            </td>
+            <td><a href="#" title="Edit {{ robot.name }}"><i class="fa fa-pencil-square"></i></a></td>
+            <td><a href="#" title="Delete {{ robot.name }}"><i class="fa fa-trash"></i></a></td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="post-table">
+        <div class="pull-right">
+          <a class='btn btn-default' href="#">New Robot</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>

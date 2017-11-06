@@ -20,6 +20,7 @@
 
 		<!-- controllers -->
 		<script src="app/controllers/mainCtrl.js"></script>
+		<script src="app/controllers/overCtrl.js"></script>
 
 		<!-- services -->
 		<script src="app/services/robotService.js"></script>
@@ -29,25 +30,7 @@
 		<script src="app/app.js"></script>
 	</head>
 	<body class="container" ng-app="myApp">
-		<header>
-			<nav class="navbar navbar-default">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="/">Oshdewm Robot Management</a>
-				</div>
-
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-					<li><a href="/laberinto"><i class="fa fa-external-link-square"></i> Laberinto</a></li>
-					<li><a href="/siguelineas"><i class="fa fa-window-minimize"></i> Siguelineas</a></li>
-					<li><a href="/velocistas"><i class="fa fa-bolt"></i> Velocistas</a></li>
-				</ul>
-			</nav>
- 		</header>
- 		<main>
-			<div id="content-views">
 				<div ng-view></div>
-			</div>
- 		</main>
 	</body>
 </html>
 </html>

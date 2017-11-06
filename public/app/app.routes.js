@@ -30,6 +30,11 @@ angular.module('app.routes', ['ngRoute'])
 		categoryId: 3,
 		categoryName: 'Robots Velocistas'
 	})
+	.when('/:categoryName/overlay', {
+		templateUrl: 'app/views/pages/overlay.html',
+		controller: 'overlayController',
+		controllerAs: 'over'
+	})
 	// get rid of the hash in the URL
 	$locationProvider.html5Mode(true);
 });
