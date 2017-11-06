@@ -36,7 +36,7 @@
           <th ng-if="main.categoryId == 2">Online Documentation</th>
           <th ng-if="main.categoryId == 2">Retweet Count</th>
           <th ng-if="main.categoryId == 2">Twitter Best</th>
-          <th>Total Score</th>
+          <th ng-if="main.categoryId != 0">Total Score</th>
           <th colspan="2">Actions</th>
         </thead>
         <tbody>
@@ -51,6 +51,7 @@
             <td ng-if="main.categoryId == 2">{{robot.extra.onlineDocs}}</td>
             <td ng-if="main.categoryId == 2">{{robot.extra.retweetCount}}</td>
             <td ng-if="main.categoryId == 2">{{robot.extra.twitter}}</td>
+            <td ng-if="main.categoryId != 0">0</td>
             <td><a href="#" title="Edit {{ robot.name }}"><i class="fa fa-pencil-square"></i></a></td>
             <td><a href="#" title="Delete {{ robot.name }}"><i class="fa fa-trash"></i></a></td>
           </tr>
