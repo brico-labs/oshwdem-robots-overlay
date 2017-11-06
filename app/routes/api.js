@@ -2,6 +2,7 @@ var Robot = require('../models/robot');
 var config = require('../../config')
 
 var superSecret = config.secret;
+
 module.exports = function(app, express) {
   var apiRouter = express.Router();
 
@@ -30,6 +31,19 @@ module.exports = function(app, express) {
       robot.times.push(time);
       robot.times.push(time);
       robot.times.push(time);
+
+      // Check if the category needs the extra object
+      if(req.body.category == 2){
+        var extra = {
+          recycled: false,
+          original: false,
+          onlineDocs: false,
+          retweetCount: 0,
+          twitter: 0
+        }
+
+        robot.extra = extra;
+      }
 
   		// save the user and check for errors
   		robot.save(function(err) {

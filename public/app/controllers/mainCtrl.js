@@ -2,6 +2,7 @@ angular.module('mainCtrl', [])
 .controller('mainController', function($route, $rootScope, $location, Robot) {
 	var vm = this;
 
+	vm.routePath = $route.current.originalPath;
 	vm.categoryName = $route.current.$$route.categoryName;
   vm.categoryId = $route.current.$$route.categoryId;
 

@@ -22,12 +22,21 @@
         <div class="pull-right">
           <a class='btn btn-default' href="#">New Robot</a>
         </div>
+        <div ng-if="main.categoryId != 0" class="pull-right">
+          <a class='btn btn-default' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
+        </div>
       </div>
       <table class='table table-striped'>
         <thead>
           <th>Name</th>
           <th>Category</th>
           <th colspan="3">Times</th>
+          <th ng-if="main.categoryId == 2">Recycled Materials</th>
+          <th ng-if="main.categoryId == 2">Originality</th>
+          <th ng-if="main.categoryId == 2">Online Documentation</th>
+          <th ng-if="main.categoryId == 2">Retweet Count</th>
+          <th ng-if="main.categoryId == 2">Twitter Best</th>
+          <th>Total Score</th>
           <th colspan="2">Actions</th>
         </thead>
         <tbody>
@@ -37,6 +46,11 @@
             <td ng-repeat="time in robot.times">
               {{ main.prettyTime(time) }}
             </td>
+            <td ng-if="main.categoryId == 2">{{robot.extra.recycled}}</td>
+            <td ng-if="main.categoryId == 2">{{robot.extra.original}}</td>
+            <td ng-if="main.categoryId == 2">{{robot.extra.onlineDocs}}</td>
+            <td ng-if="main.categoryId == 2">{{robot.extra.retweetCount}}</td>
+            <td ng-if="main.categoryId == 2">{{robot.extra.twitter}}</td>
             <td><a href="#" title="Edit {{ robot.name }}"><i class="fa fa-pencil-square"></i></a></td>
             <td><a href="#" title="Delete {{ robot.name }}"><i class="fa fa-trash"></i></a></td>
           </tr>
@@ -45,6 +59,9 @@
       <div id="post-table">
         <div class="pull-right">
           <a class='btn btn-default' href="#">New Robot</a>
+        </div>
+        <div ng-if="main.categoryId != 0" class="pull-right">
+          <a class='btn btn-default' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
         </div>
       </div>
     </div>
