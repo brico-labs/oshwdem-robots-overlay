@@ -1,16 +1,28 @@
 <body class="container" ng-app="myApp">
   <header>
-    <nav class="navbar navbar-default">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/">Oshdewm Robot Management</a>
-      </div>
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+      </button>
+      <a class="navbar-brand" href="/">Oshwdem Robot Management</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="/laberinto"><i class="fa fa-external-link-square"></i> Laberinto</a></li>
-        <li><a href="/siguelineas"><i class="fa fa-window-minimize"></i> Siguelineas</a></li>
-        <li><a href="/velocistas"><i class="fa fa-bolt"></i> Velocistas</a></li>
-      </ul>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/"><i class="fa fa-home"></i> Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/laberinto"><i class="fa fa-external-link-square"></i> Laberinto</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/siguelineas"><i class="fa fa-window-minimize"></i> Siguelineas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/velocistas"><i class="fa fa-bolt"></i> Velocistas</a></li>
+          </li>
+        </ul>
+      </div>
     </nav>
   </header>
   <main>
@@ -20,10 +32,10 @@
           <h3>{{ main.categoryName }}</h3>
         </div>
         <div class="pull-right">
-          <a class='btn btn-default' href="#">New Robot</a>
+          <a class='btn btn-primary btn-raised' href="#" ng-click="main.openDialog()">New Robot</a>
         </div>
         <div ng-if="main.categoryId != 0" class="pull-right">
-          <a class='btn btn-default' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
+          <a class='btn btn-primary btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
         </div>
       </div>
       <table class='table table-striped'>
@@ -37,7 +49,7 @@
           <th ng-if="main.categoryId == 2">Retweet Count</th>
           <th ng-if="main.categoryId == 2">Twitter Best</th>
           <th ng-if="main.categoryId != 0">Total Score</th>
-          <th colspan="2">Actions</th>
+          <th>Actions</th>
         </thead>
         <tbody>
           <tr ng-repeat="robot in main.robots">
@@ -52,18 +64,19 @@
             <td ng-if="main.categoryId == 2">{{robot.extra.retweetCount}}</td>
             <td ng-if="main.categoryId == 2">{{robot.extra.twitter}}</td>
             <td ng-if="main.categoryId != 0">0</td>
-            <td><a href="#" title="Edit {{ robot.name }}"><i class="fa fa-pencil-square"></i></a></td>
-            <td><a href="#" title="Delete {{ robot.name }}"><i class="fa fa-trash"></i></a></td>
+            <td><a href="#" title="Edit {{ robot.name }}"><i class="fa fa-pencil-square"></i></a>
+                <a href="#" title="Delete {{ robot.name }}"><i class="fa fa-trash"></i></a></td>
           </tr>
         </tbody>
       </table>
       <div id="post-table">
         <div class="pull-right">
-          <a class='btn btn-default' href="#">New Robot</a>
+          <a class='btn btn-primary btn-raised' href="#" ng-click="main.openDialog()">New Robot</a>
         </div>
         <div ng-if="main.categoryId != 0" class="pull-right">
-          <a class='btn btn-default' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
+          <a class='btn btn-primary btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
         </div>
+      </div>
       </div>
     </div>
   </main>

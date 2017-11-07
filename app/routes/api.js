@@ -9,7 +9,7 @@ module.exports = function(app, express) {
   // test route to make sure everything is working
   // accessed at GET http://localhost:8080/api
   apiRouter.get('/', function(req, res) {
-  	res.json({ message: 'hooray! welcome to our api!' });
+  	res.json({ success: true,  message: 'This is the awesome Oshwdem Robot Management API' });
   });
 
   // REGISTER OUR ROUTES -------------------------------
@@ -50,18 +50,18 @@ module.exports = function(app, express) {
   			if (err) {
   				// duplicate entry
   				if (err.code == 11000)
-  					return res.json({ success: false, message: 'A robot with that name already exists. '});
+  					return res.json({ success: false, error: err.code, message: 'A robot with that name already exists in that category.'});
   				else
   					return res.send(err);
   			}
-  		res.json({ message: 'Robot created!' });
+  		res.json({ success: true, message: robot });
   		});
   	})
   	.get(function(req, res) {
   		Robot.find(function(err, robots) {
-  			if (err) res.send(err);
+  			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robots' });
   			// return the users
-  			res.json(robots);
+  			res.json({ success: true, message: robots });
   		});
   	});
 
@@ -70,15 +70,16 @@ module.exports = function(app, express) {
   apiRouter.route('/robots/:robot_id')
   	.get(function(req, res) {
   		Robot.findById(req.params.robot_id, function(err, robot) {
-  			if (err) res.send(err);
+  			//if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robot' });
+        return res.send(err);
   			// return that robot
-  			res.json(robot);
+  			res.json({ success: true, message: robot });
   		});
   	})
   	.put(function(req, res) {
   		// use our user model to find the robot we want
   		Robot.findById(req.params.robot_id, function(err, robot) {
-  			if (err) res.send(err);
+  			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t update robot' });
   			//update the robot info only if its new
   			if (req.body.name) robot.name = req.body.name;
   			if (req.body.category) robot.category = req.body.username;
@@ -91,9 +92,9 @@ module.exports = function(app, express) {
         }
   			// save the robot
   			robot.save(function(err) {
-  				if (err) res.send(err);
+  				if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t save robot' });
   				// return a message
-  				res.json({ message: 'Robot updated!' });
+  				res.json({ success: true, message: robot });
   			});
   		});
   	})
@@ -101,43 +102,23 @@ module.exports = function(app, express) {
   		Robot.remove({
   			_id: req.params.robot_id
   		}, function(err, user) {
-  			if (err) return res.send(err);
-  			res.json({ message: 'Successfully deleted' });
+  			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t delete robot' });
+  			res.json({ success: true });
   		});
   });
 
   apiRouter.route('/robots/:robot_id/times')
   	.get(function(req, res){
   		Robot.findById(req.params.robot_id, function(err, robot) {
-  			if (err) res.send(err);
+  			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robot times' });
   			// return that robot
   			res.json(robot.times);
-  		});
-  	})
-    .post(function(req, res) {
-      // use our user model to find the robot we want
-  		Robot.findById(req.params.robot_id, function(err, robot) {
-  			if (err) res.send(err);
-  			var time = {
-          "minutes": req.body.minutes,
-          "seconds": req.body.seconds,
-          "miliseconds": req.body.miliseconds
-        }
-
-        robot.times.push(time);
-
-  			// save the robot
-  			robot.save(function(err) {
-  				if (err) res.send(err);
-  				// return a message
-  				res.json({ message: 'Robot time added!' });
-  			});
   		});
   	})
     .put(function(req, res) {
       // use our user model to find the robot we want
       Robot.findById(req.params.robot_id, function(err, robot) {
-        if (err) res.send(err);
+        if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t update robot time' });
         var time = {
           "minutes": req.body.minutes,
           "seconds": req.body.seconds,
@@ -148,16 +129,16 @@ module.exports = function(app, express) {
 
         // save the robot
         robot.save(function(err) {
-          if (err) res.send(err);
+          if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t save robot times' });
           // return a message
-          res.json({ message: 'Robot time ' + req.body.timeid + ' updated!' });
+          res.json({ success: true, message: robot });
         });
       });
     })
     .delete(function(req, res){
       // use our user model to find the robot we want
       Robot.findById(req.params.robot_id, function(err, robot) {
-        if (err) res.send(err);
+        if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t delete robot time' });
         var time = {
           "minutes": 0,
           "seconds": 0,
@@ -168,9 +149,9 @@ module.exports = function(app, express) {
 
         // save the robot
         robot.save(function(err) {
-          if (err) res.send(err);
+          if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t save robot times' });
           // return a message
-          res.json({ message: 'Robot time ' + req.body.timeid + ' deleted!' });
+          res.json({ success: true, message: robot });
         });
       });
     });
@@ -178,9 +159,9 @@ module.exports = function(app, express) {
   apiRouter.route('/robots/category/:category_id')
     .get(function(req, res){
       Robot.find({ 'category': req.params.category_id }, function(err, robots) {
-  			if (err) res.send(err);
+  			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robots by category' });
   			// return those robots
-  			res.json(robots);
+  			res.json({ success: true, message: robots });
   		});
     })
 

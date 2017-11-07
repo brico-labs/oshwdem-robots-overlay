@@ -1,5 +1,5 @@
 angular.module('mainCtrl', [])
-.controller('mainController', function($route, $rootScope, $location, Robot) {
+.controller('mainController', function($route, $rootScope, $location, Robot, ngDialog) {
 	var vm = this;
 
 	vm.routePath = $route.current.originalPath;
@@ -27,13 +27,18 @@ angular.module('mainCtrl', [])
 		}
 	}
 
+	vm.openDialog = function () {
+		console.log('Open Dialog');
+    ngDialog.open({ template: 'app/views/modals/popupTmpl.html', className: 'ngdialog-theme-default' });
+  };
+
 	if ( vm.categoryId != 0 ){
 		Robot.getByCategory(vm.categoryId)
 			.then(function(ret) {
 				// when all the robots come back, remove the processing variable
 				vm.processing = false;
 				// bind the robots that come back to vm.robots
-				vm.robots = ret.data;
+				vm.robots = ret.data.message;
 			});
 	} else {
 		Robot.all()
@@ -41,7 +46,7 @@ angular.module('mainCtrl', [])
 				// when all the robots come back, remove the processing variable
 				vm.processing = false;
 				// bind the robots that come back to vm.robots
-				vm.robots = ret.data;
+				vm.robots = ret.data.message;
 			});
 	}
 });
