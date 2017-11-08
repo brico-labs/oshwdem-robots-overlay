@@ -4,7 +4,9 @@
 @blue: #A6D0C7;
 @purple: #993399;
 @red: #cc3333;
+@dark_gray: #222;
 @light_gray: #DDDDDD;
+@chroma_green: #00FF00;
 
 /* MAIN
 ====================== */
@@ -26,4 +28,59 @@ body  {
 }
 
 .ng-leave {
+}
+
+/* OVERLAY. XYZ SHOUKAN
+====================== */
+.chroma-bg{
+	background: @chroma_green;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+#oshwdem-info{
+	position: absolute;
+	bottom: 6%;
+	left: 3%;
+	width: 40%;
+	height: 15%;
+	background-color: @dark_gray;
+	border-radius: 3px;
+	text-shadow: 0px 0px 4px #000;
+
+	#logo-container{
+		display: inline-block;
+		width: 20%;
+		height: 100%;
+		background-image: url(../img/OSHWI-color-low.png);
+		background-size: 120%;
+		background-repeat: no-repeat;
+		background-position: 10% 33%;
+	}
+
+	#info-container{
+		display: inline-block;
+		width: 75%;
+		float: right;
+		color: @light_gray;
+		margin-top: 3%;
+	}
+}
+
+#robot-ranking{
+	color: @light_gray;
+	position: absolute;
+	text-shadow: 0px 0px 4px #000;
+	top: 6%;
+	right: 3%;
+	padding: 10px;
+	background: @dark_gray;
+	border-radius: 3px;
+
+	td {
+		padding: 5px 10px;
+	}
 }

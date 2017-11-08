@@ -1,10 +1,6 @@
 angular.module('mainCtrl', [])
-.controller('mainController', function($route, $rootScope, $location, Robot, ngDialog) {
+.controller('mainController', function($route, $routeParams, $rootScope, $location, Robot, ngDialog) {
 	var vm = this;
-
-	vm.routePath = $route.current.originalPath;
-	vm.categoryName = $route.current.$$route.categoryName;
-  vm.categoryId = $route.current.$$route.categoryId;
 
 	function pad(n, width, z) {
 	  z = z || '0';
@@ -16,16 +12,37 @@ angular.module('mainCtrl', [])
 		return robotTime.minutes + ":" + pad(robotTime.seconds, 2, '0') + '.' + pad(robotTime.miliseconds, 3, '0');
 	}
 
-	vm.prettyCategory = function(categoryId){
-		switch(categoryId){
-			case 1:
-				return "Laberinto";
-			case 2:
+	vm.prettyCategory = function(categorySlug){
+		switch(categorySlug){
+			case "laberinto":
+				return "de Laberinto";
+			case "siguelineas":
 				return "Siguelineas";
-			case 3:
+			case "velocistas":
 				return "Velocistas";
+			default:
+				return "All";
 		}
 	}
+
+	vm.getCategoryId = function(categorySlug){
+		switch(categorySlug){
+			case "laberinto":
+				return 1;
+			case "siguelineas":
+				return 2;
+			case "velocistas":
+				return 3;
+			default:
+				return 0;
+		}
+	}
+
+	vm.categorySlug = $routeParams.categoryName;
+	vm.categoryTitle = vm.prettyCategory(vm.categorySlug);
+	vm.categoryId = vm.getCategoryId(vm.categorySlug);
+	vm.routePath = "/"+vm.categorySlug;
+
 
 	vm.openDialog = function () {
 		console.log('Open Dialog');

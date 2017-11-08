@@ -1,0 +1,19 @@
+<div class='chroma-bg'>
+    <div id="oshwdem-info">
+      <div id="logo-container"></div>
+      <div id="info-container">
+        <h3>Oshwdem 2017</h3>
+        <h4>Competición de Robots {{over.categoryTitle}}</h4>
+      </div>
+    </div>
+
+    <table id="robot-ranking">
+      <tbody>
+        <tr class="ranking-line" ng-repeat="robot in over.robots track by $index">
+          <td>{{$index + 1}}</td>
+          <td>{{ robot.name }}</td>
+          <td>{{ over.prettyTime(robot.times[0]) }}</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
