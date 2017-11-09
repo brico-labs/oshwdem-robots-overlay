@@ -13,7 +13,11 @@ angular.module('mainCtrl', [])
 	}
 
 	vm.prettyTime = function(robotTime){
-		return robotTime.minutes + ":" + pad(robotTime.seconds, 2, '0') + '.' + pad(robotTime.miliseconds, 3, '0');
+		if(robotTime){
+			return robotTime.minutes + ":" + pad(robotTime.seconds, 2, '0') + '.' + pad(robotTime.miliseconds, 3, '0');
+		} else {
+			return "00:00.000"
+		}
 	}
 
 	vm.prettyCategory = function(categorySlug){
@@ -204,6 +208,35 @@ angular.module('mainCtrl', [])
 			}
     });
 	};
+
+	vm.rankingDialog = function($event){
+		if (vm.categoryId != 2){
+			sortedRobots = vm.robots.slice(0);
+			sortedRobots = sortedRobots.sort(function(a, b) {
+				if(vm.bestTime(a) < vm.bestTime(b)) return -1;
+				if(vm.bestTime(b) < vm.bestTime(a)) return 1;
+				return 0;
+			});
+		} else {
+			sortedRobots = vm.robots.slice(0);
+			sortedRobots = sortedRobots.sort(function(a, b) {
+				if(vm.calculateScore(a) < vm.calculateScore(b)) return 1;
+				if(vm.calculateScore(b) < vm.calculateScore(a)) return -1;
+				return 0;
+			});
+		}
+
+		var dialog = ngDialog.open({
+      template: 'app/views/modals/ranking.html',
+			scope: $scope,
+			controller: 'mainController',
+			controllerAs: 'main',
+			width: 560,
+			data: {
+				robots: sortedRobots
+			}
+    });
+	}
 
 	vm.toggleExtra = function(robot, field){
 		var robotData = robot;

@@ -31,10 +31,11 @@
         <h3>Robots {{ main.categoryTitle }}</h3>
       </div>
       <div class="pull-right">
+        <a ng-if="main.categoryId != 0" class='btn btn-warning btn-raised' ng-click="main.rankingDialog($event)" href="#">Ranking</a>
+        <a ng-if="main.categoryId != 0" class='btn btn-success btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
         <a class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
       </div>
-      <div ng-if="main.categoryId != 0" class="pull-right">
-        <a class='btn btn-primary btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
+      <div class="pull-right">
       </div>
     </div>
     <table class='table table-striped'>
@@ -88,11 +89,10 @@
       </tbody>
     </table>
     <div id="post-table">
-      <div class="pull-right">
-        <a class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
-      </div>
       <div ng-if="main.categoryId != 0" class="pull-right">
-        <a class='btn btn-primary btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
+        <a ng-if="main.categoryId != 0" class='btn btn-warning btn-raised' ng-click="main.rankingDialog($event)" href="#">Ranking</a>
+        <a ng-if="main.categoryId != 0" class='btn btn-success btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
+        <a class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
       </div>
     </div>
     </div>

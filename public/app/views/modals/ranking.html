@@ -1,0 +1,19 @@
+<h4>Ranking</h4>
+<table class="table table-striped">
+  <tbody>
+    <tr ng-repeat='robot in ngDialogData.robots track by $index'>
+      <td>{{$index + 1}}</td>
+      <td>{{robot.name}}</td>
+      <td>{{main.prettyTime(robot.times[main.bestTimeIndex(robot)])}}</td>
+      <td ng-if="robot.extra">
+        <i ng-if="robot.extra.recycle" class="fa fa-recycle" aria-hidden="true"></i>
+        <i ng-if="robot.extra.original" class="fa fa-lightbulb-o" aria-hidden="true"></i>
+        <i ng-if="robot.extra.onlineDocs" class="fa fa-file-text" aria-hidden="true"></i>
+        <span class="ranking-retweet-count"><i ng-if="main.isTwitterBest(robot)" class="fa fa-twitter" aria-hidden="true"></i> {{robot.extra.retweetCount}} RT</span>
+      </td>
+      <td ng-if="robot.extra">
+        {{main.calculateScore(robot)}}
+      </td>
+    </tr>
+  </tbody>
+</table>
