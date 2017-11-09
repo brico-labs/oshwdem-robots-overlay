@@ -1,0 +1,28 @@
+<h3>Edit Robot</h3>
+<hr>
+<p>
+<label for="robotName">Name: <input type="text" name="robotName" ng-model="ngDialogData.robot.name"></label>
+<label for="robotCategory">Category: <select ng-model="ngDialogData.robot.category" ng-options="cat.name for cat in rob.robotCategories"></select></label>
+</p>
+<hr>
+<h4>Times</h4>
+<label for="robotTime1">Time 1:
+  <input type="text" class="time-input" name="newRobotTime1m" ng-model="ngDialogData.robot.times[0].minutes">:
+  <input type="text" class="time-input" name="newRobotTime1s" ng-model="ngDialogData.robot.times[0].seconds">.
+  <input type="text" class="time-input" name="newRobotTime1ms" ng-model="ngDialogData.robot.times[0].miliseconds">
+</label>
+<label for="robotTime2">Time 2:
+  <input type="text" class="time-input" name="newRobotTime2m" ng-model="ngDialogData.robot.times[1].minutes">:
+  <input type="text" class="time-input" name="newRobotTime2s" ng-model="ngDialogData.robot.times[1].seconds">.
+  <input type="text" class="time-input" name="newRobotTime2ms" ng-model="ngDialogData.robot.times[1].miliseconds">
+</label>
+<label for="robotTime3">Time 3:
+  <input type="text" class="time-input" name="newRobotTime3m" ng-model="ngDialogData.robot.times[2].minutes">:
+  <input type="text" class="time-input" name="newRobotTime3s" ng-model="ngDialogData.robot.times[2].seconds">.
+  <input type="text" class="time-input" name="newRobotTime3ms" ng-model="ngDialogData.robot.times[2].miliseconds">
+</label>
+<hr>
+<p class="text-right">
+  <button class="inline btn btn-danger" ng-click="closeThisDialog()">Cancel</button>
+  <button class="inline btn btn-success" ng-click="rob.updateRobot(ngDialogData.robot); closeThisDialog()">Update</button>
+</p>

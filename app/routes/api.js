@@ -71,7 +71,7 @@ module.exports = function(app, express) {
   	.get(function(req, res) {
   		Robot.findById(req.params.robot_id, function(err, robot) {
   			//if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robot' });
-        return res.send(err);
+        if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robot' });
   			// return that robot
   			res.json({ success: true, message: robot });
   		});
@@ -82,13 +82,14 @@ module.exports = function(app, express) {
   			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t update robot' });
   			//update the robot info only if its new
   			if (req.body.name) robot.name = req.body.name;
-  			if (req.body.category) robot.category = req.body.username;
+  			if (req.body.category) robot.category = req.body.category;
+        if (req.body.times) robot.times = req.body.times;
   			if (req.body.extra){
-          if(req.body.extra.recycled) robot.extra["recycled"] = req.body.extra.recycled;
-          if(req.body.extra.original) robot.extra["original"] = req.body.extra.original;
-          if(req.body.extra.onlineDocs) robot.extra["onlineDocs"] = req.body.extra.onlineDocs;
-          if(req.body.extra.retweetCount) robot.extra["retweetCount"] = req.body.extra.retweetCount;
-          if(req.body.extra.twitter) robot.extra["twitter"] = req.body.extra.twitter;
+          if(typeof req.body.extra.recycled !== 'undefined') robot.extra.recycled = req.body.extra.recycled;
+          if(typeof req.body.extra.original !== 'undefined') robot.extra.original = req.body.extra.original;
+          if(typeof req.body.extra.onlineDocs !== 'undefined') robot.extra.onlineDocs = req.body.extra.onlineDocs;
+          if(typeof req.body.extra.retweetCount !== 'undefined') robot.extra.retweetCount = req.body.extra.retweetCount;
+          if(typeof req.body.extra.twitter !== 'undefined') robot.extra.twitter = req.body.extra.twitter;
         }
   			// save the robot
   			robot.save(function(err) {

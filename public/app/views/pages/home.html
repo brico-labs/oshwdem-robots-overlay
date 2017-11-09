@@ -47,22 +47,41 @@
         <th ng-if="main.categoryId == 2">Online Documentation</th>
         <th ng-if="main.categoryId == 2">Retweet Count</th>
         <th ng-if="main.categoryId == 2">Twitter Best</th>
-        <th ng-if="main.categoryId != 0">Total Score</th>
+        <th ng-if="main.categoryId == 2">Total Score</th>
         <th>Actions</th>
       </thead>
       <tbody>
         <tr ng-repeat="robot in main.robots">
           <td>{{ robot.name }}</td>
           <td>{{ main.prettyCategoryId(robot.category) }}</td>
-          <td ng-repeat="time in robot.times">
+          <td ng-repeat="time in robot.times track by $index" ng-class="{'best-time': $index==main.bestTimeIndex(robot)}">
             {{ main.prettyTime(time) }}
           </td>
-          <td ng-if="main.categoryId == 2">{{robot.extra.recycled}}</td>
-          <td ng-if="main.categoryId == 2">{{robot.extra.original}}</td>
-          <td ng-if="main.categoryId == 2">{{robot.extra.onlineDocs}}</td>
-          <td ng-if="main.categoryId == 2">{{robot.extra.retweetCount}}</td>
-          <td ng-if="main.categoryId == 2">{{robot.extra.twitter}}</td>
-          <td ng-if="main.categoryId != 0">0</td>
+          <td ng-if="main.categoryId == 2"><a href="javascript:void(0)" ng-click="main.toggleExtra(robot, 'recycled')">
+            <i class="fa fa-star" ng-if="robot.extra.recycled"></i>
+            <i class="fa fa-star-o" ng-if="!robot.extra.recycled"></i>
+          </a></td>
+          <td ng-if="main.categoryId == 2"><a href="javascript:void(0)" ng-click="main.toggleExtra(robot, 'original')">
+            <i class="fa fa-star" ng-if="robot.extra.original"></i>
+            <i class="fa fa-star-o" ng-if="!robot.extra.original"></i>
+          </a></td>
+          <td ng-if="main.categoryId == 2"><a href="javascript:void(0)" ng-click="main.toggleExtra(robot, 'onlineDocs')">
+            <i class="fa fa-star" ng-if="robot.extra.onlineDocs"></i>
+            <i class="fa fa-star-o" ng-if="!robot.extra.onlineDocs"></i>
+          </a></td>
+          <td ng-if="main.categoryId == 2"><a href="javascript:void(0)" ng-click="main.modRetweet(robot, -1)">
+              <i class="fa fa-minus"></i>
+            </a>
+            {{robot.extra.retweetCount}}
+            <a href="javascript:void(0)" ng-click="main.modRetweet(robot, 1)">
+              <i class="fa fa-plus"></i>
+            </a>
+          </td>
+          <td ng-if="main.categoryId == 2">
+            <i class="fa fa-star" ng-if="main.isTwitterBest(robot)"></i>
+            <i class="fa fa-star-o" ng-if="!main.isTwitterBest(robot)"></i>
+          </td>
+          <td ng-if="main.categoryId == 2">{{main.calculateScore(robot)}}</td>
           <td><a href="#" title="Edit {{ robot.name }}" ng-click="main.editRobotDialog(robot, $event)"><i class="fa fa-pencil-square"></i></a>
               <a href="#" title="Delete {{ robot.name }}" ng-click="main.deleteRobotDialog(robot, $event)"><i class="fa fa-trash"></i></a></td>
         </tr>

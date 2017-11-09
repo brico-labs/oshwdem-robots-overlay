@@ -23,8 +23,8 @@ angular.module('robotService', [])
     };
 
     // update a robot
-    robotFactory.update = function(id, robotData) {
-      return $http.put('/api/robots/' + id, robotData);
+    robotFactory.update = function(robotId, robotData) {
+      return $http.put('/api/robots/' + robotId, robotData);
     };
 
     // delete a robot
