@@ -3,6 +3,7 @@ angular.module('myApp', [
 	'ngDialog',
 	'app.routes',
 	'mainCtrl',
+	'robotCtrl',
 	'overCtrl',
 	'robotService'
 ]);

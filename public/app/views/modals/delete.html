@@ -1,0 +1,8 @@
+<h3>Delete Robot</h3>
+<hr>
+<p>Are you sure you want to delete {{ngDialogData.robot.name}}?</p>
+<hr>
+<p class="text-right">
+  <button class="inline btn btn-danger" ng-click="closeThisDialog()">No</button>
+  <button class="inline btn btn-success" ng-click="rob.deleteRobot(ngDialogData.robot); closeThisDialog()">Yes</button>
+</p>

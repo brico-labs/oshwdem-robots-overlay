@@ -1,0 +1,11 @@
+<h3>New Robot</h3>
+<hr>
+<p>
+<label for="newRobotName">Name: <input type="text" name="newRobotName" ng-model="rob.newRobot.name" value=""></label>
+<label for="newRobotCategory">Category: <select ng-model="rob.newRobot.category" ng-options="cat.name for cat in rob.robotCategories"></select></label>
+</p>
+<hr>
+<p class="text-right">
+  <button class="inline btn btn-danger" ng-click="closeThisDialog()">Cancel</button>
+  <button class="inline btn btn-success" ng-click="rob.createRobot(rob.newRobot.name, rob.newRobot.category.id); closeThisDialog()">Create</button>
+</p>

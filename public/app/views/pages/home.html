@@ -8,16 +8,16 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
+        <li class="nav-item" ng-class="{ active: isActive('/')}">
           <a class="nav-link" href="/"><i class="fa fa-home"></i> Home</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" ng-class="{ active: isActive('/laberinto')}">
           <a class="nav-link" href="/laberinto"><i class="fa fa-external-link-square"></i> Laberinto</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" ng-class="{ active: isActive('/siguelineas')}">
           <a class="nav-link" href="/siguelineas"><i class="fa fa-window-minimize"></i> Siguelineas</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" ng-class="{ active: isActive('/velocistas')}">
           <a class="nav-link" href="/velocistas"><i class="fa fa-bolt"></i> Velocistas</a></li>
         </li>
       </ul>
@@ -31,7 +31,7 @@
         <h3>Robots {{ main.categoryTitle }}</h3>
       </div>
       <div class="pull-right">
-        <a class='btn btn-primary btn-raised' href="#" ng-click="main.openDialog()">New Robot</a>
+        <a class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
       </div>
       <div ng-if="main.categoryId != 0" class="pull-right">
         <a class='btn btn-primary btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
@@ -53,7 +53,7 @@
       <tbody>
         <tr ng-repeat="robot in main.robots">
           <td>{{ robot.name }}</td>
-          <td>{{ main.prettyCategory(robot.category) }}</td>
+          <td>{{ main.prettyCategoryId(robot.category) }}</td>
           <td ng-repeat="time in robot.times">
             {{ main.prettyTime(time) }}
           </td>
@@ -63,14 +63,14 @@
           <td ng-if="main.categoryId == 2">{{robot.extra.retweetCount}}</td>
           <td ng-if="main.categoryId == 2">{{robot.extra.twitter}}</td>
           <td ng-if="main.categoryId != 0">0</td>
-          <td><a href="#" title="Edit {{ robot.name }}"><i class="fa fa-pencil-square"></i></a>
-              <a href="#" title="Delete {{ robot.name }}"><i class="fa fa-trash"></i></a></td>
+          <td><a href="#" title="Edit {{ robot.name }}" ng-click="main.editRobotDialog(robot, $event)"><i class="fa fa-pencil-square"></i></a>
+              <a href="#" title="Delete {{ robot.name }}" ng-click="main.deleteRobotDialog(robot, $event)"><i class="fa fa-trash"></i></a></td>
         </tr>
       </tbody>
     </table>
     <div id="post-table">
       <div class="pull-right">
-        <a class='btn btn-primary btn-raised' href="#" ng-click="main.openDialog()">New Robot</a>
+        <a class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
       </div>
       <div ng-if="main.categoryId != 0" class="pull-right">
         <a class='btn btn-primary btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
