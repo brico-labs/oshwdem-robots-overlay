@@ -41,7 +41,7 @@
     <table class='table table-striped'>
       <thead>
         <th>Name</th>
-        <th>Category</th>
+        <th ng-if="main.categoryId == 0">Category</th>
         <th colspan="3">Times</th>
         <th ng-if="main.categoryId == 2">Recycled Materials</th>
         <th ng-if="main.categoryId == 2">Originality</th>
@@ -54,7 +54,7 @@
       <tbody>
         <tr ng-repeat="robot in main.robots">
           <td>{{ robot.name }}</td>
-          <td>{{ main.prettyCategoryId(robot.category) }}</td>
+          <td ng-if="main.categoryId == 0">{{ main.prettyCategoryId(robot.category) }}</td>
           <td ng-repeat="time in robot.times track by $index" ng-class="{'best-time': $index==main.bestTimeIndex(robot)}">
             {{ main.prettyTime(time) }}
           </td>
