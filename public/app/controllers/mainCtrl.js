@@ -1,5 +1,5 @@
 angular.module('mainCtrl', [])
-.controller('mainController', function($route, $routeParams, $rootScope, $location, $scope, $filter, Robot, ngDialog) {
+.controller('mainController', function($route, $routeParams, $rootScope, $location, $scope, $timeout, $filter, Robot, ngDialog) {
 	var vm = this;
 
 	$scope.isActive = function (viewLocation) {
@@ -14,10 +14,11 @@ angular.module('mainCtrl', [])
 
 	vm.prettyTime = function(robotTime){
 		if(robotTime){
-			return robotTime.minutes + ":" + pad(robotTime.seconds, 2, '0') + '.' + pad(robotTime.miliseconds, 3, '0');
-		} else {
-			return "00:00.000"
+			if (timeToMiliseconds(robotTime) != 0) {
+				return robotTime.minutes + ":" + pad(robotTime.seconds, 2, '0') + '.' + pad(robotTime.miliseconds, 3, '0');
+			}
 		}
+		return "--:--.---"
 	}
 
 	vm.prettyCategory = function(categorySlug){
@@ -90,6 +91,10 @@ angular.module('mainCtrl', [])
 	vm.categoryTitle = vm.prettyCategory(vm.categorySlug);
 	vm.categoryId = vm.getCategoryId(vm.categorySlug);
 	vm.routePath = "/"+vm.categorySlug;
+	vm.categoryRankingSize = 16;
+	if (vm.categoryId == 2){
+		vm.categoryRankingSize = 12;
+	}
 
 	var refreshRobotList = function(categoryId){
 		if (categoryId != 0 ){
@@ -99,6 +104,7 @@ angular.module('mainCtrl', [])
 					vm.processing = false;
 					// bind the robots that come back to vm.robots
 					vm.robots = ret.data.message;
+					vm.ranking = getRanking(vm.robots, vm.categoryRankingSize);
 				});
 		} else {
 			Robot.all()
@@ -107,11 +113,11 @@ angular.module('mainCtrl', [])
 					vm.processing = false;
 					// bind the robots that come back to vm.robots
 					vm.robots = ret.data.message;
+					vm.ranking = getRanking(vm.robots, vm.categoryRankingSize);
 				});
 		}
-	}
 
-	refreshRobotList(vm.categoryId);
+	}
 
 	vm.bestTimeIndex = function(robot){
 		var times = robot.times;
@@ -209,7 +215,7 @@ angular.module('mainCtrl', [])
     });
 	};
 
-	vm.rankingDialog = function($event){
+	getRanking = function(robots, size){
 		if (vm.categoryId != 2){
 			sortedRobots = vm.robots.slice(0);
 			sortedRobots = sortedRobots.sort(function(a, b) {
@@ -225,7 +231,11 @@ angular.module('mainCtrl', [])
 				return 0;
 			});
 		}
+		return sortedRobots.slice(0,size-1);
+	}
 
+	vm.rankingDialog = function($event){
+		sortedRobots = vm.rankingRobots;
 		var dialog = ngDialog.open({
       template: 'app/views/modals/ranking.html',
 			scope: $scope,
@@ -260,6 +270,20 @@ angular.module('mainCtrl', [])
 			});
 	}
 
+
+	refreshRobotList(vm.categoryId);
+
+	overlayRefresh = function(){
+    $timeout(function() {
+			refreshRobotList(vm.categoryId);
+      vm.ranking = getRanking(vm.robots, vm.categoryRankingSize);
+      overlayRefresh();
+    }, 500)
+  };
+
+	if ($route.current.$$route.overlay){
+		overlayRefresh();
+	}
 });
 
 

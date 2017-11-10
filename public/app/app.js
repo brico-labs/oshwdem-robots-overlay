@@ -4,6 +4,5 @@ angular.module('myApp', [
 	'app.routes',
 	'mainCtrl',
 	'robotCtrl',
-	'overCtrl',
 	'robotService'
 ]);

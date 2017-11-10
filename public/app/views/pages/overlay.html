@@ -8,13 +8,67 @@
       </div>
     </div> -->
 
-    <table id="robot-ranking">
-      <tbody>
-        <tr class="ranking-line" ng-repeat="robot in over.robots track by $index">
-          <td>{{$index + 1}}</td>
-          <td>{{ robot.name }}</td>
-          <td>{{ over.prettyTime(robot.times[0]) }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div id="robot-ranking">
+      <table id="ranking-container" class="table-sm">
+        <tbody>
+          <tr class="ranking-line pos-{{$index}}" ng-if="main.categoryId != 2" ng-repeat="robot in main.ranking track by $index">
+            <td class="ranking-number">{{$index + 1}}</td>
+            <td class="ranking-name" ng-class="{'big-name': $index <= 2 }">{{ robot.name }}</td>
+            <td>
+              <table class="times-subtable" ng-if="$parent.$index <= 2">
+                <tr class="times-subline" ng-repeat="time in robot.times track by $index">
+                  <td class="time-number">{{$index + 1}}</td>
+                  <td align="left">{{main.prettyTime(time)}}</td>
+                </tr>
+              </table>
+              <span align="left" ng-if="$parent.$index > 2"> {{ main.prettyTime(robot[main.bestTimeIndex(robot)]) }} </span>
+            </td>
+          </tr>
+
+          <tr class="ranking-line pos-{{$index}}" ng-if="main.categoryId == 2" ng-repeat="robot in main.ranking track by $index">
+            <td class="ranking-number">{{$index + 1}}</td>
+            <td class="ranking-name">
+              <table>
+                <tr>
+                  <td ng-class="{'small-name': $index > 2 }">{{ robot.name }}</td>
+                </tr>
+                <tr>
+                  <td ng-if="$parent.$index <= 2" class="ranking-icons">
+                    <i class="fa fa-recycle recycle" ng-class="{'icon-color': robot.extra.recycle }" aria-hidden="true"></i>
+                    <i class="fa fa-lightbulb-o original" ng-class="{'icon-color': robot.extra.original }" aria-hidden="true"></i>
+                    <i class="fa fa-file-text onlineDocs" ng-class="{'icon-color': robot.extra.onlineDocs }" aria-hidden="true"></i>
+                    <span class="ranking-retweet-count">
+                      <i ng-class="{'icon-color': main.isTwitterBest(robot) }" class="fa fa-twitter twitter" aria-hidden="true"></i> {{robot.extra.retweetCount}} RT
+                    </span>
+                  </td>
+                  <td ng-if="$parent.$index > 2" class="ranking-icons icons-mini">
+                    <i class="fa fa-circle recycle" ng-class="{'icon-color': robot.extra.recycle }" aria-hidden="true"></i>
+                    <i class="fa fa-circle original" ng-class="{'icon-color': robot.extra.original }" aria-hidden="true"></i>
+                    <i class="fa fa-circle onlineDocs" ng-class="{'icon-color': robot.extra.onlineDocs }" aria-hidden="true"></i>
+                    <span class="ranking-retweet-count">
+                      <i ng-class="{'icon-color': main.isTwitterBest(robot) }" class="fa fa-circle twitter" aria-hidden="true"></i> {{robot.extra.retweetCount}} RT
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td>
+              <table class="times-subtable" ng-if="$parent.$index <= 2">
+                <tr class="times-subline" ng-repeat="time in robot.times.slice(0,2) track by $index">
+                  <td class="time-number">{{$index + 1}}</td>
+                  <td align="left">{{main.prettyTime(time)}}</td>
+                </tr>
+                <tr class="score-subline">
+                  <td class="time-number">Score: </td>
+                  <td align="left">{{main.calculateScore(robot)}} pts</td>
+                </tr>
+              </table>
+              <span align="left" ng-if="$parent.$index > 2"> {{ main.prettyTime(robot[main.bestTimeIndex(robot)]) }} </span>
+              <span class="mini-score" align="left" ng-if="$parent.$index > 2"> {{ main.calculateScore(robot) }} pts</span>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
 </div>

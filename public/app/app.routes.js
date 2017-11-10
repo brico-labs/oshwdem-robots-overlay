@@ -16,8 +16,9 @@ angular.module('app.routes', ['ngRoute'])
 	})
 	.when('/:categoryName/overlay', {
 		templateUrl: 'app/views/pages/overlay.html',
-		controller: 'overlayController',
-		controllerAs: 'over'
+		controller: 'mainController',
+		controllerAs: 'main',
+		overlay: true
 	})
 	// get rid of the hash in the URL
 	$locationProvider.html5Mode(true);
