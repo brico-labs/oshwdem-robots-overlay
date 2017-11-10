@@ -166,7 +166,7 @@ angular.module('mainCtrl', [])
 			if(vm.bestTime(b) < vm.bestTime(a)) return 1;
 			return 0;
 		});
-		
+
 		if(timeSorted.length > 0){
 			score += (timeSorted[0]._id == robot._id ? 4 : 0);
 		}
@@ -288,9 +288,7 @@ angular.module('mainCtrl', [])
     }, 500)
   };
 
-	if ($route.current.$$route.overlay){
-		overlayRefresh();
-	}
+	overlayRefresh();
 });
 
 
