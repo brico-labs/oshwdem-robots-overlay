@@ -235,7 +235,8 @@ angular.module('mainCtrl', [])
 	}
 
 	vm.rankingDialog = function($event){
-		sortedRobots = vm.rankingRobots;
+		refreshRobotList(vm.categoryId);
+		vm.ranking = getRanking(vm.robots, vm.categoryRankingSize);
 		var dialog = ngDialog.open({
       template: 'app/views/modals/ranking.html',
 			scope: $scope,
@@ -243,7 +244,7 @@ angular.module('mainCtrl', [])
 			controllerAs: 'main',
 			width: 560,
 			data: {
-				robots: sortedRobots
+				robots: vm.ranking
 			}
     });
 	}
