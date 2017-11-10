@@ -98,7 +98,7 @@ body  {
 	.ranking-line{
 		position: relative;
 	}
-	.ranking-line:before{
+	.ranking-line:after{
 		content: " ";
 		position:absolute;
 		width: 100%;
@@ -185,13 +185,18 @@ body  {
 		margin-left: 5px;
 	}
 
+	.ranking-times{
+		padding-right: 25px;
+	}
+
 	.times-subtable{
+		width: 100%;
+
 		tr{
 			border-bottom: 1px solid lighten(@dark_gray, 10%);
 
 			td {
 				padding: 0 5px;
-				width: 100%;
 			}
 		}
 

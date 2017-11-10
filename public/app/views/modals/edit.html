@@ -22,6 +22,11 @@
   <input type="text" class="time-input" name="newRobotTime3ms" ng-model="ngDialogData.robot.times[2].miliseconds">
 </label>
 <hr>
+<h4>Reweets</h4>
+<label for="robotRetweets">Retweet Count:
+  <input type="text" name="newRobotRetweets" ng-model="ngDialogData.robot.extra.retweetCount">
+</label>
+<hr>
 <p class="text-right">
   <button class="inline btn btn-danger" ng-click="closeThisDialog()">Cancel</button>
   <button class="inline btn btn-success" ng-click="rob.updateRobot(ngDialogData.robot); closeThisDialog()">Update</button>

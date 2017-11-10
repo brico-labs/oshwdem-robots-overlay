@@ -166,10 +166,16 @@ angular.module('mainCtrl', [])
 			if(vm.bestTime(b) < vm.bestTime(a)) return 1;
 			return 0;
 		});
-		score += (timeSorted[0]._id == robot._id ? 4 : 0);
-		score += (timeSorted[1]._id == robot._id ? 3 : 0);
-		score += (timeSorted[2]._id == robot._id ? 2 : 0);
-
+		
+		if(timeSorted.length > 0){
+			score += (timeSorted[0]._id == robot._id ? 4 : 0);
+		}
+		if (timeSorted.length > 1) {
+			score += (timeSorted[1]._id == robot._id ? 3 : 0);
+		}
+		if (timeSorted.length > 2) {
+			score += (timeSorted[2]._id == robot._id ? 2 : 0);
+		}
 		return score;
 	}
 

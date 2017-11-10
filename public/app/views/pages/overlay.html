@@ -14,7 +14,7 @@
           <tr class="ranking-line pos-{{$index}}" ng-if="main.categoryId != 2" ng-repeat="robot in main.ranking track by $index">
             <td class="ranking-number">{{$index + 1}}</td>
             <td class="ranking-name" ng-class="{'big-name': $index <= 2 }">{{ robot.name }}</td>
-            <td>
+            <td class="ranking-times">
               <table class="times-subtable" ng-if="$parent.$index <= 2">
                 <tr class="times-subline" ng-repeat="time in robot.times track by $index">
                   <td class="time-number">{{$index + 1}}</td>
@@ -52,7 +52,7 @@
                 </tr>
               </table>
             </td>
-            <td>
+            <td class="ranking-times">
               <table class="times-subtable" ng-if="$parent.$index <= 2">
                 <tr class="times-subline" ng-repeat="time in robot.times.slice(0,2) track by $index">
                   <td class="time-number">{{$index + 1}}</td>
