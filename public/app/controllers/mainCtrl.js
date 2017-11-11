@@ -93,7 +93,7 @@ angular.module('mainCtrl', [])
 	vm.routePath = "/"+vm.categorySlug;
 	vm.categoryRankingSize = 16;
 	if (vm.categoryId == 2){
-		vm.categoryRankingSize = 12;
+		vm.categoryRankingSize = 10;
 	}
 
 	var refreshRobotList = function(categoryId){
@@ -104,7 +104,7 @@ angular.module('mainCtrl', [])
 					vm.processing = false;
 					// bind the robots that come back to vm.robots
 					vm.robots = ret.data.message;
-					vm.ranking = getRanking(vm.robots, vm.categoryRankingSize);
+					vm.ranking = getRanking(vm.robots, vm.categoryRankingSize+1);
 				});
 		} else {
 			Robot.all()
@@ -113,7 +113,7 @@ angular.module('mainCtrl', [])
 					vm.processing = false;
 					// bind the robots that come back to vm.robots
 					vm.robots = ret.data.message;
-					vm.ranking = getRanking(vm.robots, vm.categoryRankingSize);
+					vm.ranking = getRanking(vm.robots, vm.categoryRankingSize+1);
 				});
 		}
 
