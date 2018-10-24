@@ -6,6 +6,7 @@ var morgan     = require('morgan');
 var config     = require('./config');
 var path     = require('path');
 
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -18,7 +19,7 @@ app.use(function(req, res, next) {
 
 app.use(morgan('dev'));
 
-mongoose.connect(config.database);
+mongoose.connect(config.database, { useMongoClient: true });
 
 var apiRoutes = require('./app/routes/api')(app, express);
 app.use('/api', apiRoutes);

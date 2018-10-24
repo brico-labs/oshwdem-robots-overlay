@@ -26,6 +26,9 @@ var RobotSchema = new Schema({
   // 1 is Laberinto
   // 2 is Siguelineas
   // 3 is Velocistas
+  // 4 is Sumo
+  // 5 is Hebocon
+  // 6 is Combate
   times: [RobotTimeSchema],
   extra: RobotExtraSchema
 });

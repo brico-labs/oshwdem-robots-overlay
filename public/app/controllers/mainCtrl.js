@@ -29,8 +29,14 @@ angular.module('mainCtrl', [])
 				return "Siguelineas";
 			case "velocistas":
 				return "Velocistas";
+			case "sumo":
+				return "de Sumo";
+			case "hebocon":
+				return "HEBOCON";
+			case "combate":
+				return "de Combate";
 			default:
-				return "All";
+				return "en General";
 		}
 	}
 
@@ -42,6 +48,12 @@ angular.module('mainCtrl', [])
 				return "Siguelineas";
 			case 3:
 				return "Velocistas";
+			case 4:
+				return "Sumo";
+			case 5:
+				return "HEBOCON";
+			case 6:
+				return "Combate";
 		}
 	}
 
@@ -53,6 +65,12 @@ angular.module('mainCtrl', [])
 				return 2;
 			case "velocistas":
 				return 3;
+			case "sumo":
+				return 4;
+			case "hebocon":
+				return 5;
+			case "combate":
+				return 6;
 			default:
 				return 0;
 		}
@@ -300,6 +318,9 @@ angular.module('robotCtrl', [])
 			{id: 1, slug: "laberinto", name: "Laberinto"},
 			{id: 2, slug: "siguelineas", name: "Siguelineas"},
 			{id: 3, slug: "velocistas", name: "Velocistas"},
+			{id: 4, slug: "sumo", name: "Sumo"},
+			{id: 5, slug: "hebocon", name: "HEBOCON"},
+			{id: 6, slug: "combate", name: "Combate"},
 		]
 
 		r.newRobot = {
