@@ -19,7 +19,7 @@ app.use(function(req, res, next) {
 
 app.use(morgan('dev'));
 
-mongoose.connect(config.database, { useMongoClient: true });
+mongoose.connect(config.database);
 
 var apiRoutes = require('./app/routes/api')(app, express);
 app.use('/api', apiRoutes);

@@ -1,7 +1,7 @@
 <header>
   <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
     </button>
-    <a class="navbar-brand" href="/"><i class="fa fa-robot"></i> Oshwdem Robot Management</a>
+    <a class="navbar-brand" href="/"><i class="fa fa-robot"></i> OSHWDem Robot Management</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -31,76 +31,5 @@
   </nav>
 </header>
 <main>
-  <div id="content-views">
-    <div id="pre-table">
-      <div class="pull-left">
-        <h3>Robots {{ main.categoryTitle }}</h3>
-      </div>
-      <div class="pull-right">
-        <a ng-if="main.categoryId != 0" class='btn btn-warning btn-raised' ng-click="main.rankingDialog($event)" href="#">Ranking</a>
-        <a ng-if="main.categoryId != 0" class='btn btn-success btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
-        <a class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
-      </div>
-      <div class="pull-right">
-      </div>
-    </div>
-    <table ng-if="main.categoryId < 4" class='table table-striped'>
-      <thead>
-        <th>Name</th>
-        <th ng-if="main.categoryId == 0">Category</th>
-        <th colspan="3">Times</th>
-        <th ng-if="main.categoryId == 2">Recycled Materials</th>
-        <th ng-if="main.categoryId == 2">Originality</th>
-        <th ng-if="main.categoryId == 2">Online Documentation</th>
-        <th ng-if="main.categoryId == 2">Retweet Count</th>
-        <th ng-if="main.categoryId == 2">Twitter Best</th>
-        <th ng-if="main.categoryId == 2">Total Score</th>
-        <th>Actions</th>
-      </thead>
-      <tbody>
-        <tr ng-repeat="robot in main.robots">
-          <td>{{ robot.name }}</td>
-          <td ng-if="main.categoryId == 0">{{ main.prettyCategoryId(robot.category) }}</td>
-          <td ng-repeat="time in robot.times track by $index" ng-class="{'best-time': $index==main.bestTimeIndex(robot)}">
-            {{ main.prettyTime(time) }}
-          </td>
-          <td ng-if="main.categoryId == 2"><a href="javascript:void(0)" ng-click="main.toggleExtra(robot, 'recycled')">
-            <i class="fa fa-star" ng-if="robot.extra.recycled"></i>
-            <i class="fa fa-star-o" ng-if="!robot.extra.recycled"></i>
-          </a></td>
-          <td ng-if="main.categoryId == 2"><a href="javascript:void(0)" ng-click="main.toggleExtra(robot, 'original')">
-            <i class="fa fa-star" ng-if="robot.extra.original"></i>
-            <i class="fa fa-star-o" ng-if="!robot.extra.original"></i>
-          </a></td>
-          <td ng-if="main.categoryId == 2"><a href="javascript:void(0)" ng-click="main.toggleExtra(robot, 'onlineDocs')">
-            <i class="fa fa-star" ng-if="robot.extra.onlineDocs"></i>
-            <i class="fa fa-star-o" ng-if="!robot.extra.onlineDocs"></i>
-          </a></td>
-          <td ng-if="main.categoryId == 2"><a href="javascript:void(0)" ng-click="main.modRetweet(robot, -1)">
-              <i class="fa fa-minus"></i>
-            </a>
-            {{robot.extra.retweetCount}}
-            <a href="javascript:void(0)" ng-click="main.modRetweet(robot, 1)">
-              <i class="fa fa-plus"></i>
-            </a>
-          </td>
-          <td ng-if="main.categoryId == 2">
-            <i class="fa fa-star" ng-if="main.isTwitterBest(robot)"></i>
-            <i class="fa fa-star-o" ng-if="!main.isTwitterBest(robot)"></i>
-          </td>
-          <td ng-if="main.categoryId == 2">{{main.calculateScore(robot)}}</td>
-          <td><a href="#" title="Edit {{ robot.name }}" ng-click="main.editRobotDialog(robot, $event)"><i class="fa fa-pencil-square"></i></a>
-              <a href="#" title="Delete {{ robot.name }}" ng-click="main.deleteRobotDialog(robot, $event)"><i class="fa fa-trash"></i></a></td>
-        </tr>
-      </tbody>
-    </table>
-    <div id="post-table">
-      <div ng-if="main.categoryId != 0" class="pull-right">
-        <a ng-if="main.categoryId != 0" class='btn btn-warning btn-raised' ng-click="main.rankingDialog($event)" href="#">Ranking</a>
-        <a ng-if="main.categoryId != 0" class='btn btn-success btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
-        <a class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
-      </div>
-    </div>
-    </div>
-  </div>
+  <div ng-include="getCategoryTemplate()"></div>
 </main>

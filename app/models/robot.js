@@ -18,6 +18,16 @@ var RobotExtraSchema = new Schema({
   twitter: { type: Boolean }
 });
 
+// robotCombat schema
+var RobotCombatSchema = new Schema({
+  played: { type: Number },
+  won: { type: Number },
+  lost: { type: Number },
+  draw: { type: Number },
+  eliminated: { type: Boolean},
+  dropOut: {type: Boolean}
+});
+
 // robot schema
 var RobotSchema = new Schema({
   name: { type: String, required: true },
@@ -30,7 +40,8 @@ var RobotSchema = new Schema({
   // 5 is Hebocon
   // 6 is Combate
   times: [RobotTimeSchema],
-  extra: RobotExtraSchema
+  extra: RobotExtraSchema,
+  combatInfo: RobotCombatSchema
 });
 
 RobotSchema.index({ "name" : 1, "category" : 1 }, { unique : true })

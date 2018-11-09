@@ -1,10 +1,39 @@
 angular.module('mainCtrl', [])
-.controller('mainController', function($route, $routeParams, $rootScope, $location, $scope, $timeout, $filter, Robot, ngDialog) {
+.controller('mainController', function($route, $routeParams, $rootScope,
+	$location, $scope, $timeout, $filter, Robot, Tourney, ngDialog) {
 	var vm = this;
 
 	$scope.isActive = function (viewLocation) {
         return viewLocation === $location.path();
     };
+
+	$scope.getCategoryTemplate = function(){
+		baseUrl = "/app/views/partial/";
+		switch($location.path()){
+			case "/laberinto":
+				baseUrl += "timetable.html";
+				break;
+			case "/siguelineas":
+				baseUrl += "timetable_plus.html";
+				break;
+			case "/velocistas":
+				baseUrl += "timetable.html";
+				break;
+			case "/sumo":
+				baseUrl += "tourney.html";
+				break;
+			case "/hebocon":
+				baseUrl += "tourney.html";
+				break;
+			case "/combate":
+				baseUrl += "tourney.html";
+				break;
+			default:
+				baseUrl += "general.html";
+				break;
+		}
+		return baseUrl;
+	}
 
 	function pad(n, width, z) {
 	  z = z || '0';
@@ -18,7 +47,7 @@ angular.module('mainCtrl', [])
 				return robotTime.minutes + ":" + pad(robotTime.seconds, 2, '0') + '.' + pad(robotTime.miliseconds, 3, '0');
 			}
 		}
-		return "--:--.---"
+		return "--"
 	}
 
 	vm.prettyCategory = function(categorySlug){
@@ -114,9 +143,13 @@ angular.module('mainCtrl', [])
 		vm.categoryRankingSize = 10;
 	}
 
+	$scope.categoryId = vm.getCategoryId(vm.categorySlug);
+
+
+
 	var refreshRobotList = function(categoryId){
 		if (categoryId != 0 ){
-			Robot.getByCategory(categoryId)
+			Robot.getByCategory(vm.categoryId)
 				.then(function(ret) {
 					// when all the robots come back, remove the processing variable
 					vm.processing = false;
@@ -147,6 +180,7 @@ angular.module('mainCtrl', [])
 					bestIdx = i;
 				}
 		}
+		console.log(robot.name, bestIdx, times[bestIdx]);
 		return bestIdx;
 	}
 
@@ -172,6 +206,7 @@ angular.module('mainCtrl', [])
 		score += (isValidTime(robot.times[0]) ? 2 : 0);
 		score += (isValidTime(robot.times[1]) ? 2 : 0);
 		score += (isValidTime(robot.times[2]) ? 2 : 0);
+
 		score += (robot.extra.recycled ? 5 : 0);
 		score += (robot.extra.original ? 5 : 0);
 		score += (robot.extra.onlineDocs ? 6 : 0);
@@ -201,7 +236,7 @@ angular.module('mainCtrl', [])
 		var dialog = ngDialog.open({
       template: 'app/views/modals/new.html',
 			scope: $scope,
-			controller: 'robotController',
+			controller: 'RobotController',
 			controllerAs: 'rob',
 			preCloseCallback: function(value){
 				refreshRobotList(vm.categoryId);
@@ -213,7 +248,7 @@ angular.module('mainCtrl', [])
 		var dialog = ngDialog.open({
       template: 'app/views/modals/edit.html',
 			scope: $scope,
-			controller: 'robotController',
+			controller: 'RobotController',
 			controllerAs: 'rob',
 			data: {
 				robot: robot
@@ -228,7 +263,7 @@ angular.module('mainCtrl', [])
 		var dialog = ngDialog.open({
       template: 'app/views/modals/delete.html',
 			scope: $scope,
-			controller: 'robotController',
+			controller: 'RobotController',
 			controllerAs: 'rob',
 			data: {
 				robot: robot
@@ -239,28 +274,56 @@ angular.module('mainCtrl', [])
     });
 	};
 
+	vm.dropRobotDialog = function(robot, $event){
+		r = confirm("Are you sure you want to drop " + robot.name + " out of the tourney?")
+		if (r){
+			robot.combatInfo.dropOut = !robot.combatInfo.dropOut;
+			Robot.update(robot._id, robot);
+		}
+	}
+
 	getRanking = function(robots, size){
-		if (vm.categoryId != 2){
-			sortedRobots = vm.robots.slice(0);
+		if (vm.categoryId != 2 && vm.categoryId < 4 ){
+			sortedRobots = robots.slice(0);
 			sortedRobots = sortedRobots.sort(function(a, b) {
 				if(vm.bestTime(a) < vm.bestTime(b)) return -1;
 				if(vm.bestTime(b) < vm.bestTime(a)) return 1;
 				return 0;
 			});
-		} else {
-			sortedRobots = vm.robots.slice(0);
+		}
+		if (vm.categoryId == 2) {
+			sortedRobots = robots.slice(0);
 			sortedRobots = sortedRobots.sort(function(a, b) {
 				if(vm.calculateScore(a) < vm.calculateScore(b)) return 1;
 				if(vm.calculateScore(b) < vm.calculateScore(a)) return -1;
 				return 0;
 			});
 		}
+		if (vm.categoryId >= 4) {
+			sortedRobots = robots.slice(0);
+			sortedRobots = sortedRobots.sort(function(a, b) {
+				if(vm.calculateCombatScore(a) < vm.calculateCombatScore(b)) return 1;
+				if(vm.calculateCombatScore(a) > vm.calculateCombatScore(b)) return -1;
+				if(vm.calculateCombatScore(a) == vm.calculateCombatScore(b)
+						&& a.combatInfo.played > b.combatInfo.played) return -1;
+				if(vm.calculateCombatScore(a) == vm.calculateCombatScore(b)
+						&& a.combatInfo.played < b.combatInfo.played) return 1;
+				if(vm.calculateCombatScore(a) == vm.calculateCombatScore(b)
+						&& vm.defeated(a, b)) return -1;
+				if(vm.calculateCombatScore(a) == vm.calculateCombatScore(b)
+						&& vm.defeated(b, a)) return 1;
+				return 0;
+			});
+		}
+
+
 		return sortedRobots.slice(0,size-1);
 	}
 
 	vm.rankingDialog = function($event){
-		refreshRobotList(vm.categoryId);
+		console.log("ROBOTS", vm.robots);
 		vm.ranking = getRanking(vm.robots, vm.categoryRankingSize);
+		console.log("RANKING", vm.ranking);
 		var dialog = ngDialog.open({
       template: 'app/views/modals/ranking.html',
 			scope: $scope,
@@ -295,6 +358,125 @@ angular.module('mainCtrl', [])
 			});
 	}
 
+	vm.calculateCombatScore = function(robot){
+		var ci = robot.combatInfo;
+		score = (ci.won * 2) + ci.draw;
+		return score;
+	}
+
+	vm.calculateCombatStatus = function(robot){
+		var ci = robot.combatInfo;
+		status = "Alive";
+		if (ci.eliminated) status = "Eliminated";
+		if (ci.dropOut) status = "Dropped";
+		return status;
+	}
+
+	vm.altaRobot = function(robotName, robotCategory){
+		var robotData = {
+			"name": robotName,
+			"category": robotCategory
+		}
+
+		var tourneyData = {
+			"name": "Torneo Categoria " + robotCategory,
+			"category" : robotCategory,
+			"modality" : "single"
+		}
+
+
+		if(robotName != "" && robotCategory != 0){
+			Robot.create(robotData)
+				.then(function(ret){
+					if(!ret.data.success){
+						alert("Error creating robot. " + ret.data.message);
+					}
+					// Check if robot belongs to a tourney
+					if (robotCategory >= 4){
+						Tourney.getByCategory(robotCategory)
+							.then(function (tret) {
+								// Tourney doesn't exist in this category
+								if (tret.data.message.length == 0){
+									Tourney.create(tourneyData)
+										.then(function(tcret){
+											if(!tcret.data.success){
+												alert("Error creating tourney for robot " + tcret.data.error)
+											}
+											Tourney.addRobot(tcret.data.message._id, ret.data.message._id)
+											.then(function (aret){
+												if(!aret.data.success){
+													alert("Error adding robot. " + aret.data.message);
+												}
+											});
+										});
+								} else {
+									Tourney.addRobot(tret.data.message[0]._id, ret.data.message._id)
+									.then(function (aret){
+										if(!aret.data.success){
+											alert("Error adding robot. " + aret.data.message);
+										}
+									});
+								}
+							});
+						}
+				});
+		} else {
+			alert("Invalid Name and/or Category");
+		}
+	}
+
+	vm.bajaRobot = function(robot){
+		if (robot.category >= 4){
+			// Find the robot's category tournament
+			Tourney.getByCategory(robot.category)
+				.then(function (tret){
+					if(!tret.data.success){
+						alert("Error finding corresponding tourney: " + aret.data.message);
+					}
+					downTourney = tret.data.message[0];
+					Tourney.removeRobot(downTourney._id, robot._id)
+						.then(function (dret){
+							if(!dret.data.success){
+								alert("Error removing robot from corresponding tourney: " + dret.data.message);
+							} else {
+								Robot.delete(robot._id)
+							}
+						})
+				});
+		} else {
+			Robot.delete(robot._id)
+		}
+	}
+
+	vm.defeated = function(robotA, robotB){
+		Tourney.getByCategory(robotA.category)
+			.then(function(ret0){
+				if (ret0.data.message.length == 0){
+					return false;
+				} else {
+					tourney = ret0.data.message[0];
+					Tourney.allMatches(tourney._id)
+						.then(function(ret1){
+							matches = ret1.data.message.all;
+							winners = matches.filter(m => (m.participant_a == robotA._id && m.participant_b == robotB._id)
+								|| (m.participant_a == robotB._id && m.participant_b == robotA._id))
+								.map(m => m.winner);
+							var win_a = 0;
+							var win_b = 0;
+							winners.forEach(function(w){
+								if (w == robotA._id) win_a += 1;
+								if (w == robotB._id) win_b += 1;
+							});
+							if (win_a > win_b){
+								return true;
+							} else {
+								return false;
+							}
+						});
+				}
+			});
+	}
+
 
 	refreshRobotList(vm.categoryId);
 
@@ -303,67 +485,8 @@ angular.module('mainCtrl', [])
 			refreshRobotList(vm.categoryId);
       vm.ranking = getRanking(vm.robots, vm.categoryRankingSize);
       overlayRefresh();
-    }, 500)
+    }, 1000)
   };
 
 	overlayRefresh();
-});
-
-
-angular.module('robotCtrl', [])
-.controller('robotController', function($route, $routeParams, $rootScope, $location, $scope, Robot, ngDialog) {
-		var r = this;
-
-		r.robotCategories = [
-			{id: 1, slug: "laberinto", name: "Laberinto"},
-			{id: 2, slug: "siguelineas", name: "Siguelineas"},
-			{id: 3, slug: "velocistas", name: "Velocistas"},
-			{id: 4, slug: "sumo", name: "Sumo"},
-			{id: 5, slug: "hebocon", name: "HEBOCON"},
-			{id: 6, slug: "combate", name: "Combate"},
-		]
-
-		r.newRobot = {
-			name: "",
-			category: 0
-		}
-
-	  r.deleteRobot = function(robot){
-	    Robot.delete(robot._id);
-	  }
-
-		r.createRobot = function(name, categoryId){
-			var robotData = {
-				"name": name,
-				"category": categoryId
-			}
-
-			if(name != "" && categoryId != 0){
-				Robot.create(robotData)
-					.then(function(ret){
-						if(!ret.data.success){
-							alert("Error creating robot. " + ret.data.message);
-						}
-					});
-			} else {
-				alert("Invalid Name and/or Category");
-			}
-
-		}
-
-		r.updateRobot = function(robot){
-			robot.category = robot.category.id;
-
-			if(robot.name != "" && robot.categoryId != 0){
-				Robot.update(robot._id, robot)
-					.then(function(ret){
-						if(!ret.data.success){
-							alert("Error updating robot. " + ret.data.message);
-							console.log(ret.data);
-						}
-					});
-			} else {
-				alert("Invalid Name and/or Category");
-			}
-		}
 });

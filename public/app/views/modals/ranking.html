@@ -4,7 +4,7 @@
     <tr ng-repeat='robot in ngDialogData.robots track by $index'>
       <td>{{$index + 1}}</td>
       <td>{{robot.name}}</td>
-      <td>{{main.prettyTime(robot.times[main.bestTimeIndex(robot)])}}</td>
+      <td ng-if="!robot.combatInfo">{{main.prettyTime(robot.times[main.bestTimeIndex(robot)])}}</td>
       <td ng-if="robot.extra">
         <i ng-if="robot.extra.recycle" class="fa fa-recycle" aria-hidden="true"></i>
         <i ng-if="robot.extra.original" class="fa fa-lightbulb-o" aria-hidden="true"></i>
@@ -13,6 +13,9 @@
       </td>
       <td ng-if="robot.extra">
         {{main.calculateScore(robot)}}
+      </td>
+      <td ng-if="robot.combatInfo">
+        {{main.calculateCombatScore(robot)}}
       </td>
     </tr>
   </tbody>

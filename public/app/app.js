@@ -4,5 +4,7 @@ angular.module('myApp', [
 	'app.routes',
 	'mainCtrl',
 	'robotCtrl',
-	'robotService'
+	'tourneyCtrl',
+	'robotService',
+	'tourneyService'
 ]);
