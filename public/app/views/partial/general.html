@@ -1,0 +1,31 @@
+<div id="content-views">
+  <div id="pre-table">
+    <div class="pull-left">
+      <h3>Robots {{ main.categoryTitle }}</h3>
+    </div>
+    <div class="pull-right">
+      <a class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
+    </div>
+    <div class="pull-right">
+    </div>
+  </div>
+  <table class='table table-striped'>
+    <thead>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="robot in main.robots">
+        <td>{{ robot.name }}</td>
+        <td >{{ main.prettyCategoryId(robot.category) }}</td>
+        <td>
+          <a href="#" title="Edit {{ robot.name }}" ng-click="main.editRobotDialog(robot, $event)"><i class="fa fa-edit"></i></a>
+          <a href="#" title="Delete {{ robot.name }}" ng-click="main.deleteRobotDialog(robot, $event)"><i class="fa fa-trash"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div id="post-table">
+  </div>
+</div>

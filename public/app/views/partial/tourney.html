@@ -1,0 +1,79 @@
+<div id="content-views">
+  <div id="pre-table">
+    <div class="pull-left">
+      <h3>Robots {{ main.categoryTitle }}</h3>
+    </div>
+    <div class="pull-right">
+      <a class='btn btn-warning btn-raised' ng-click="main.rankingDialog($event)" href="#">Ranking</a>
+      <a class='btn btn-success btn-raised' target="_blank" href="{{main.routePath}}/overlay">Overlay!</a>
+      <a class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
+    </div>
+  </div>
+  <table class='table table-striped'>
+    <thead>
+      <th>Name</th>
+      <th>Played</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      <th>Score</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="robot in main.robots">
+        <td>{{ robot.name }}</td>
+        <td>{{ robot.combatInfo.played }}</td>
+        <td>{{ robot.combatInfo.won }}</td>
+        <td>{{ robot.combatInfo.lost }}</td>
+        <td>{{ robot.combatInfo.draw }}</td>
+        <td>{{ main.calculateCombatScore(robot)}}</td>
+        <td>{{ main.calculateCombatStatus(robot) }}</td>
+        <td>
+          <a href="#" title="Edit {{ robot.name }}" ng-click="main.editRobotDialog(robot, $event)"><i class="fa fa-edit"></i></a>
+          <a href="#" title="Drop Out {{ robot.name }}" ng-click="main.dropRobotDialog(robot, $event)"><i class="fas fa-times"></i></a>
+          <a href="#" title="Delete {{ robot.name }}" ng-click="main.deleteRobotDialog(robot, $event)"><i class="fa fa-trash"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div id="post-table">
+  </div>
+  <div class="match-list" ng-controller="TourneyController as trny">
+    <h3>Match List</h3>
+    <div class="pull-left">
+      <a class='btn btn-success btn-raised'
+      ng-if="(trny.all_match_list.length + trny.current_match_list.length) == 0" href="#" ng-click="trny.beginTourneyDialog($event)">Begin Tournament</a>
+      <a class='btn btn-success btn-raised'
+      ng-if="trny.current_match_list.length == 0 && trny.all_match_list.length > 0 && trny.currentTourney.modality == 'single'"
+      href="#" ng-click="trny.newTourneyRoundDialog($event)">New Round</a>
+      <a class='btn btn-danger btn-raised'
+      ng-if="(trny.all_match_list.length + trny.current_match_list.length) > 0" href="#" ng-click="trny.resetTourneyDialog($event)">Reset Tournament</a>
+    </div>
+    <table class='table table-striped'>
+      <thead>
+        <th>Player 1</th>
+        <th>Player 2</th>
+        <th>Result</th>
+        <th>Actions</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="match in trny.current_match_list track by $index">
+          <td>{{ match.participant_a.name }}</td>
+          <td>{{ match.participant_b.name }}</td>
+          <td>
+            <label for="matchResultA">P1:
+              <input type="text" name="matchResultA" ng-model="match.result_a" value="{{match.result_a}}">
+            </label>
+            //
+            <label for="matchResultB">P2:
+              <input type="text" name="matchResultB" ng-model="match.result_b" value="{{match.result_b}}">
+            </label>
+          </td>
+          <td><a class='btn btn-success btn-raised'
+            href="#" ng-click="trny.setTourneyResult(match, $event)">Confirm</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
