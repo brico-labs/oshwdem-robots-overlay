@@ -1,0 +1,10 @@
+<h3>Add time: {{ ngDialogData.robot.name }}</h3>
+<hr>
+<label for="timeMin">Time: <input type="number" class='time-input' min=0 name="timeMin" ng-model="ngDialogData.newTime.minutes">:</label>
+<label for="timeSec"><input type="number" class='time-input' min=0 max=59 name="timeSec" ng-model="ngDialogData.newTime.seconds">.</label>
+<label for="timeMilli"><input type="number" class='time-input' min=0 max=999 name="timeMili" ng-model="ngDialogData.newTime.miliseconds"></label>
+<hr>
+<p class="text-right">
+  <button class="inline btn btn-danger" ng-click="closeThisDialog()">Cancel</button>
+  <button class="inline btn btn-success" ng-click="rob.addTime(ngDialogData.robot, ngDialogData.newTime); closeThisDialog();">Update</button>
+</p>

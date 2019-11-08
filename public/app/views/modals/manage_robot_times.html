@@ -1,0 +1,18 @@
+<h3>Manage {{ ngDialogData.robot.name }} Times</h3>
+<hr>
+<div class='row' ng-repeat="time in ngDialogData.robot.times">
+    <div class='col-sm-2'>
+        {{ $index + 1 }}.
+    </div>
+    <div class='col-sm-6'>
+        {{ main.prettyTime(time) }}
+    </div>
+    <div class='col-sm-2'>
+        <a href="#" ng-click="rob.confirmDeleteTime(ngDialogData.robot, $index)"><i class="fa fa-trash"></i></a>
+    </div>
+</div>
+<hr>
+<p class="text-right">
+  <button class="inline btn btn-danger" ng-click="closeThisDialog()">Cancel</button>
+  <button class="inline btn btn-success" ng-click="rob.updateRobot(ngDialogData.robot); closeThisDialog();">Update</button>
+</p>

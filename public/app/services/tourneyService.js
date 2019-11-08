@@ -3,76 +3,29 @@ angular.module('tourneyService', [])
     // create a new object
     var tourneyFactory = {};
 
-    // get a single tourney
     tourneyFactory.get = function(id) {
-      return $http.get('/api/tourney/' + id);
+      return $http.get('/api/tourneys/' + id);
     };
 
-    // get all tourneys
-    tourneyFactory.all = function() {
-      return $http.get('/api/tourney/');
+    tourneyFactory.getByCategory = function(category_id) {
+        return $http.get('/api/category/'+category_id+'/tourneys')
     };
 
-    tourneyFactory.getByCategory = function(id) {
-      return $http.get('/api/tourney/category/' + id);
+    tourneyFactory.create = function(category, system, robots) {
+        var tourneyData = {'category' : category, 'robots' : robots, 'system' : system }
+        return $http.post('/api/tourneys/', tourneyData);
     };
 
-    // create a tourney
-    tourneyFactory.create = function(tourneyData) {
-      return $http.post('/api/tourney/', tourneyData);
+    tourneyFactory.delete = function(tourneyID) {
+        return $http.delete('/api/tourneys/' + tourneyID);
     };
 
-    // update a tourney
-    tourneyFactory.update = function(tourneyId, tourneyData) {
-      return $http.put('/api/tourney/' + tourneyId, tourneyData);
-    };
+    tourneyFactory.updateRounds = function(tourneyID, rounds){
+      var tourneyData = { 'rounds' : rounds};
+      return $http.put('/api/tourneys/' + tourneyID, tourneyData)
+    }
 
-    // delete a tourney
-    tourneyFactory.delete = function(id) {
-      return $http.delete('/api/tourney/' + id);
-    };
 
-    tourneyFactory.allRobots = function(tourneyId) {
-      return $http.get('/api/tourney/' + tourneyId + '/robots/');
-    };
-
-    // add a robot to a tourney
-    tourneyFactory.addRobot = function(tourneyId, robotId) {
-      return $http.post('/api/tourney/' + tourneyId + '/robots/', {"robot_id": robotId});
-    };
-
-    tourneyFactory.removeRobot = function(tourneyId, robotId) {
-      return $http.delete('/api/tourney/' + tourneyId + '/robots/' + robotId);
-    };
-
-    tourneyFactory.allMatches = function(tourneyId) {
-      return $http.get('/api/tourney/' + tourneyId + '/matches/');
-    };
-
-    tourneyFactory.getMatch = function(tourneyId, matchId) {
-      return $http.get('/api/tourney/' + tourneyId + '/matches/' + matchId);
-    };
-
-    tourneyFactory.removeMatch = function(tourneyId, matchId) {
-      return $http.delete('/api/tourney/' + tourneyId + '/matches/' + matchId );
-    };
-
-    tourneyFactory.setMatch = function(tourneyId, matchData) {
-      return $http.put('/api/tourney/' + tourneyId + '/matches/', { "matchData": matchData } );
-    };
-
-    tourneyFactory.addMatch = function(tourneyId, matchData) {
-      return $http.post('/api/tourney/' + tourneyId + '/matches/', matchData);
-    };
-
-    tourneyFactory.updateCurrentMatches = function(tourneyId, matches) {
-      return $http.put('/api/tourney/' + tourneyId + '/matches/', matches);
-    };
-
-    tourneyFactory.removeAllMatches = function(tourneyId) {
-      return $http.delete('/api/tourney/' + tourneyId + '/matches/',);
-    };
-
-    // return our entire tourneyFactory object
+    // return our entire raceFactory object
     return tourneyFactory;
 });

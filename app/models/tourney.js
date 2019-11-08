@@ -3,38 +3,33 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Robot = require('../models/robot');
 
-// tourneyMatch schema
-var TourneyMatchSchema = new Schema({
-  participant_a: {type: mongoose.Schema.Types.ObjectId, ref: 'Robot', required: true},
-  participant_b: {type: mongoose.Schema.Types.ObjectId, ref: 'Robot', required: false},
-  stage: {type: Number, required: false },
-  result_a: {type: Number, required: true},
-  result_b: {type: Number, required: true},
-  winner: {type: mongoose.Schema.Types.ObjectId, ref: 'Robot', required: false}
-},
-{usePushEach: true});
+var TourneySchema = new Schema();
+var TourneyRoundSchema = new Schema();
 
-var TourneyMatch = module.exports = mongoose.model('TourneyMatch', TourneyMatchSchema);
+var RoundMatchSchema = new Schema({
+  robotA: {type: mongoose.Schema.Types.ObjectId, ref: 'Robot'},
+  robotB: {type: mongoose.Schema.Types.ObjectId, ref: 'Robot'},
+  winner: {type: mongoose.Schema.Types.ObjectId, ref: 'Robot'},
+  resultA: {type: Number},
+  resultB: {type: Number},
+  bracket: {type: String},
+  isDraw: {type: Boolean}
+});
 
-// tourney schema
-var TourneySchema = new Schema({
-  name: { type: String, required: true },
-  category: { type: Number, required: true },
-  modality: { type: String, required: true },
-  // Categories are indexed for flexibility
-  // 1 is Laberinto
-  // 2 is Siguelineas
-  // 3 is Velocistas
-  // 4 is Sumo
-  // 5 is Hebocon
-  // 6 is Combate
-  allMatches : [TourneyMatchSchema],
-  currentMatches : [TourneyMatchSchema],
-  robots: [{type: mongoose.Schema.Types.ObjectId, ref: 'Robot', required: false}]
-},
-{usePushEach: true});
+TourneyRoundSchema.add({
+  tourney: {type: mongoose.Schema.Types.ObjectId, ref: 'Tourney'},
+  roundNumber: {type: Number, required: true },
+  matches: [RoundMatchSchema]
+});
 
-TourneySchema.index({ "name" : 1, "category" : 1, "modality": 1 }, { unique : true })
+TourneySchema.add({
+  robots: [{type: mongoose.Schema.Types.ObjectId, ref: 'Robot'}],
+  category: { type: String, required: true },
+  system: {type: String, required: true },
+  rounds: [TourneyRoundSchema]
+});
+
+TourneySchema.index({ "category" : 1, "system": 1 }, { unique : true })
 
 // return the model
 var Tourney = module.exports = mongoose.model('Tourney', TourneySchema);

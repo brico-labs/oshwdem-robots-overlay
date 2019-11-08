@@ -6,7 +6,7 @@ angular.module('app.routes', ['ngRoute'])
 		templateUrl: 'app/views/pages/home.html',
 		controller: 'mainController',
 		controllerAs: 'main',
-		categoryId: 0,
+		categorySlug: '',
 		categoryName: 'All Robots'
 	})
 	.when('/:categoryName', {
@@ -14,12 +14,16 @@ angular.module('app.routes', ['ngRoute'])
 		controller: 'mainController',
 		controllerAs: 'main',
 	})
-	.when('/:categoryName/overlay', {
+	.when('/overlay/:categoryName', {
 		templateUrl: 'app/views/pages/overlay.html',
 		controller: 'mainController',
 		controllerAs: 'main',
-		overlay: true
 	})
 	// get rid of the hash in the URL
 	$locationProvider.html5Mode(true);
+})
+.filter('capitalize', function() {
+    return function(input) {
+      return (angular.isString(input) && input.length > 0) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : input;
+    }
 });

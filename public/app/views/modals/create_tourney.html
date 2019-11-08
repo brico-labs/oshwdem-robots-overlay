@@ -1,0 +1,23 @@
+<h3>Torneo {{ main.categoryTitle }}</h3>
+<hr>
+<p>
+¿Desea inscribir a los robots y empezar el torneo {{ main.categoryTitle }}?
+</p>
+<p>{{ trn.recomSystem(ngDialogData.robotCount, trn.newTourney.cut.number || -1) }}</p>
+<label ng-if="ngDialogData.selectTopCut" for="newTourneySystem">Clasificados:
+    <select ng-model="trn.newTourney.cut" ng-init="trn.newTourney.cut = trn.defaultCutOptions[0]" 
+    ng-options="cut.name for cut in trn.defaultCutOptions"></select>
+</label>
+<label for="newTourneySystem">Sistema:
+    <select ng-model="trn.newTourney.system" ng-init="trn.newTourney.system = trn.tourneySystem[0]" 
+      ng-options="sys.name for sys in trn.tourneySystem"></select>
+</label>
+<hr>
+<p class="text-right">
+  <button class="inline btn btn-danger" ng-click="closeThisDialog()">Cancel</button>
+  <button class="inline btn btn-primary"
+  ng-click="trn.createTourney(main.categorySlug, trn.newTourney.system, 
+    rankingSort(main.robots, ngDialogData.sortFeature), trn.newTourney.cut);closeThisDialog();">
+  Begin
+  </button>
+</p>

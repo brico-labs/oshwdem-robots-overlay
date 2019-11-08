@@ -1,56 +1,80 @@
 angular.module('robotCtrl', [])
-.controller('RobotController', function($route, $routeParams, $rootScope, $location, $scope, Robot, Tourney, ngDialog) {
-		var r = this;
+.controller('RobotController', function(Robot, ngDialog, $scope) {
+	var r = this;
 
-		r.robotCategories = [
-			{id: 1, slug: "laberinto", name: "Laberinto"},
-			{id: 2, slug: "siguelineas", name: "Siguelineas"},
-			{id: 3, slug: "velocistas", name: "Velocistas"},
-			{id: 4, slug: "sumo", name: "Sumo"},
-			{id: 5, slug: "hebocon", name: "HEBOCON"},
-			{id: 6, slug: "combate", name: "Combate"},
-		]
+	r.robotCategories = [
+		{slug: "laberinto", name: "Laberinto"},
+		{slug: "siguelineas", name: "Siguelineas"},
+		{slug: "velocistas", name: "Velocistas"},
+		{slug: "sumo", name: "Sumo"},
+		{slug: "hebocon", name: "HEBOCON"},
+		{slug: "combate", name: "Combate"},
+	]
 
-		r.newRobot = {
-			name: "",
-			category: 0
+	r.newRobot = {
+		name: "",
+		category: 0
+	}
+
+	r.deleteRobot = function(robot){
+		Robot.delete(robot._id)
+			.then(function(ret){
+				$scope.refreshEverything();
+			})
+	}
+
+	r.createRobot = function(name, categoryName, hasExtra=false){
+		if(name != "" && categoryName != ''){
+			Robot.create(name, categoryName, hasExtra = hasExtra)
+				.then(function(ret){
+					if(!ret.data.success){
+						alert("Error creating robot. " + ret.data.message);
+					}
+					$scope.refreshEverything();
+				});
+		} else {
+			alert("Invalid Name and/or Category");
 		}
+	}
 
-	  r.deleteRobot = function(robot){
-	    Robot.delete(robot._id);
-	  }
-
-		r.createRobot = function(name, categoryId){
-			var robotData = {
-				"name": name,
-				"category": categoryId
-			}
-
-			if(name != "" && categoryId != 0){
-				Robot.create(robotData)
-					.then(function(ret){
-						if(!ret.data.success){
-							alert("Error creating robot. " + ret.data.message);
-						}
-					});
-			} else {
-				alert("Invalid Name and/or Category");
-			}
-
+	r.addTime = function(robot, newTime){
+		if ((robot && newTime.minutes != undefined 
+			&& newTime.seconds != undefined && newTime.miliseconds != undefined)
+			|| (newTime.minutes || newTime.seconds || newTime.miliseconds)){
+			robot.times.push(newTime);
+			Robot.updateTimes(robot._id, robot.times)
+				.then(function(ret){
+					if(!ret.data.success){
+						alert("Error adding time to robot. " + ret.data.message);
+					}
+				});
+		} else {
+			alert('Invalid Time!')
 		}
+	}
 
-		r.updateRobot = function(robot){
-			robot.category = robot.category.id;
-
-			if(robot.name != "" && robot.categoryId != 0){
-				Robot.update(robot._id, robot)
-					.then(function(ret){
-						if(!ret.data.success){
-							alert("Error updating robot. " + ret.data.message);
-						}
-					});
-			} else {
-				alert("Invalid Name and/or Category");
-			}
+	r.confirmDeleteTime = function(robot, timeIndex){
+		if (confirm("Remove time "+ (timeIndex+1) +"?") == true) {
+			robot.times.splice(timeIndex, 1)
+			Robot.updateTimes(robot._id, robot.times)
+			.then(function(ret){
+				if(!ret.data.success){
+					alert("Error updating robot's times. " + ret.data.message);
+				}
+			});
 		}
+	}
+
+	r.updateRobot = function(robot){
+		if(robot.name != "" && robot.category != ''){
+			Robot.updateRobot(robot._id, robot.name, robot.hasDocumentation)
+				.then(function(ret){
+					if(!ret.data.success){
+						alert("Error updating robot's name. " + ret.data.message);
+					}
+				});
+		} else {
+			alert("Invalid Name and/or Category");
+		}
+	}
 });

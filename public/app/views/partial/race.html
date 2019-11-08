@@ -1,0 +1,40 @@
+<div id="content-views">
+    <div id="pre-table">
+      <div class="pull-left">
+        <h3>Robots {{ main.categoryTitle }}</h3>
+      </div>
+      <div class="pull-right">
+        <a ng-if="!main.raceStarted" class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
+        <a ng-if="!main.raceStarted && main.robots.length > 0" class='btn btn-success btn-raised' href="#" ng-click="main.createRaceDialog($event)">Begin Race</a>
+        <a ng-if="main.raceStarted" class='btn btn-danger btn-raised' href="#" ng-click="main.deleteRaceDialog($event)">Stop Race</a>
+      </div>
+    </div>
+    <table class='table table-striped'>
+      <thead>
+        <th ng-if="main.raceStarted"> <i class="fa fa-crown"></i> </th>
+        <th>Name</th>
+        <th colspan=3 ng-if="main.raceStarted">Best Times</th>
+        <th>Actions</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="robot in rankingSort(main.robots, 'time')">
+          <td ng-if="main.raceStarted"> {{ $index+1 }} </td>
+          <td>
+            <i ng-class="{ 'not-best' : !robot.hasDocumentation }" class="fa fa-file-code"></i>
+            {{ robot.name }}
+          </td>
+          <td ng-if="main.raceStarted"> {{ main.prettyTime(main.bestRobotTimes(robot)[0]) }} </td>
+          <td ng-if="main.raceStarted"> {{ main.prettyTime(main.bestRobotTimes(robot)[1]) }} </td>
+          <td ng-if="main.raceStarted"> {{ main.prettyTime(main.bestRobotTimes(robot)[2]) }} </td>
+          <td>
+            <a href="#" title="Edit {{ robot.name }}" ng-click="main.editRobotDialog(robot, $event)"><i class="fa fa-edit"></i></a>
+            <a href="#" ng-if="!main.raceStarted" title="Delete {{ robot.name }}" ng-click="main.deleteRobotDialog(robot, $event)"><i class="fa fa-trash"></i></a>
+            <a href="#" ng-if="main.raceStarted" title="Manage times for {{ robot.name }}" ng-click="main.manageRobotTimesDialog(robot, $event)"><i class="fa fa-clock"></i></a>
+            <a href="#" ng-if="main.raceStarted" title="Add time for {{ robot.name }}" ng-click="main.addRobotTimeDialog(robot, $event)"><i class="fa fa-plus"></i></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div id="post-table">
+    </div>
+  </div>

@@ -17,8 +17,11 @@
     </thead>
     <tbody>
       <tr ng-repeat="robot in main.robots">
-        <td>{{ robot.name }}</td>
-        <td >{{ main.prettyCategoryId(robot.category) }}</td>
+        <td>
+          <i ng-class="{ 'not-best' : !robot.hasDocumentation }" class="fa fa-file-code"></i>
+          {{ robot.name }}
+        </td>
+        <td >{{ robot.category | capitalize }}</td>
         <td>
           <a href="#" title="Edit {{ robot.name }}" ng-click="main.editRobotDialog(robot, $event)"><i class="fa fa-edit"></i></a>
           <a href="#" title="Delete {{ robot.name }}" ng-click="main.deleteRobotDialog(robot, $event)"><i class="fa fa-trash"></i></a>

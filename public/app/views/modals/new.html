@@ -3,21 +3,20 @@
 <p>
 <label for="newRobotName">Name:
   <input type="text" name="newRobotName" ng-model="rob.newRobot.name" value=""></label>
-<label ng-if="main.categoryId == 0" for="newRobotCategory">Category:
-  <select ng-model="rob.newRobot.category" ng-options="cat.name for cat in rob.robotCategories"></select>
+<label ng-if="main.categorySlug == ''" for="newRobotCategory">Category:
+  <select ng-model="rob.newRobot.category" ng-init="rob.newRobot.category = rob.robotCategories[0]"
+    ng-options="cat.name for cat in rob.robotCategories"></select>
 </label>
 </p>
 <hr>
 <p class="text-right">
   <button class="inline btn btn-danger" ng-click="closeThisDialog()">Cancel</button>
-  <button ng-if="main.categoryId == 0" class="inline btn btn-primary"
-  ng-click="main.altaRobot(rob.newRobot.name, rob.newRobot.category.id);
-  closeThisDialog()">
+  <button ng-if="main.categorySlug == ''" class="inline btn btn-primary"
+  ng-click="rob.createRobot(rob.newRobot.name, rob.newRobot.category.slug, hasExtra=main.isRacePlus(rob.newRobot.category.slug));closeThisDialog();">
   Create
   </button>
-  <button ng-if="main.categoryId != 0" class="inline btn btn-success"
-  ng-click="main.altaRobot(rob.newRobot.name, main.categoryId);
-  closeThisDialog()">
+  <button ng-if="main.categorySlug != ''" class="inline btn btn-success"
+  ng-click="rob.createRobot(rob.newRobot.name, main.categorySlug, hasExtra=main.isRacePlus(main.categorySlug));closeThisDialog();">
   Create
   </button>
 </p>

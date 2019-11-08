@@ -4,19 +4,20 @@
       <div id="logo-container"></div>
       <div id="info-container">
         <h3>Oshwdem 2017</h3>
-        <h4>Competición de Robots {{over.categoryTitle}}</h4>
+        <h4>Competición de Robots {{main.categoryTitle}}</h4>
       </div>
     </div> -->
 
     <div id="robot-ranking">
       <table id="ranking-container" class="table-sm">
         <tbody>
-          <tr class="ranking-line pos-{{$index}}" ng-if="main.categoryId != 2 && main.categoryId < 4" ng-repeat="robot in main.ranking track by $index">
+          <tr class="ranking-line pos-{{$index}}" ng-if="(main.isRaceCategory(main.categorySlug) && !main.isRacePlus(main.categorySlug) && !main.isTourneyCategory(main.categorySlug)) || 
+          (main.isRaceCategory(main.categorySlug) && main.isTourneyCategory(main.categorySlug) && !main.tourneyStarted)" ng-repeat="robot in rankingSort(main.robots, 'time').slice(0,main.categoryRankingSize) track by $index">
             <td class="ranking-number">{{$index + 1}}</td>
             <td class="ranking-name" ng-class="{'big-name': $index <= 2 }">{{ robot.name }}</td>
             <td class="ranking-times">
               <table class="times-subtable" ng-if="$parent.$index <= 2">
-                <tr class="times-subline" ng-repeat="time in robot.times track by $index">
+                <tr class="times-subline" ng-repeat="time in main.bestRobotTimes(robot) track by $index">
                   <td class="time-number">{{$index + 1}}</td>
                   <td align="left">{{main.prettyTime(time)}}</td>
                 </tr>
@@ -24,8 +25,7 @@
               <span align="left" ng-if="$parent.$index > 2"> {{ main.prettyTime(robot.times[main.bestTimeIndex(robot)]) }} </span>
             </td>
           </tr>
-
-          <tr class="ranking-line pos-{{$index}}" ng-if="main.categoryId == 2" ng-repeat="robot in main.ranking track by $index">
+          <tr class="ranking-line pos-{{$index}}" ng-if="main.isRaceCategory(main.categorySlug) && main.isRacePlus(main.categorySlug)" ng-repeat="robot in rankingSort(main.robots, 'score').slice(0,main.categoryRankingSize) track by $index">
             <td class="ranking-number">{{$index + 1}}</td>
             <td class="ranking-name">
               <table>
@@ -34,58 +34,54 @@
                 </tr>
                 <tr>
                   <td ng-if="$parent.$index <= 2" class="ranking-icons">
-                    <i class="fa fa-recycle recycle" ng-class="{'icon-color': robot.extra.recycled }" aria-hidden="true"></i>
-                    <i class="far fa-lightbulb original" ng-class="{'icon-color': robot.extra.original }" aria-hidden="true"></i>
-                    <i class="fa fa-file onlineDocs" ng-class="{'icon-color': robot.extra.onlineDocs }" aria-hidden="true"></i>
-                    <span class="ranking-retweet-count">
-                      <i ng-class="{'icon-color': main.isTwitterBest(robot) }" class="fab fa-twitter twitter" aria-hidden="true"></i> {{robot.extra.retweetCount}}R
-                    </span>
+                    <i class="fa fa-recycle recycle" ng-class="{'icon-color': robot.extra.bestRecycled }" aria-hidden="true"></i>
+                    <i class="far fa-lightbulb original" ng-class="{'icon-color': robot.extra.bestOriginal }" aria-hidden="true"></i>
+                    <i class="fa fa-file onlineDocs" ng-class="{'icon-color': robot.extra.bestOnlineDocs }" aria-hidden="true"></i>
                   </td>
                   <td ng-if="$parent.$index > 2" class="ranking-icons icons-mini">
-                    <i class="fa fa-circle recycle" ng-class="{'icon-color': robot.extra.recycled }" aria-hidden="true"></i>
-                    <i class="fa fa-circle original" ng-class="{'icon-color': robot.extra.original }" aria-hidden="true"></i>
-                    <i class="fa fa-circle onlineDocs" ng-class="{'icon-color': robot.extra.onlineDocs }" aria-hidden="true"></i>
-                    <span class="ranking-retweet-count">
-                      <i ng-class="{'icon-color': main.isTwitterBest(robot) }" class="fa fa-circle twitter" aria-hidden="true"></i> {{robot.extra.retweetCount}}R
-                    </span>
+                    <i class="fa fa-circle recycle" ng-class="{'icon-color': robot.extra.bestRecycled }" aria-hidden="true"></i>
+                    <i class="fa fa-circle original" ng-class="{'icon-color': robot.extra.bestOriginal }" aria-hidden="true"></i>
+                    <i class="fa fa-circle onlineDocs" ng-class="{'icon-color': robot.extra.bestOnlineDocs }" aria-hidden="true"></i>
                   </td>
                 </tr>
               </table>
             </td>
             <td class="ranking-times">
               <table class="times-subtable" ng-if="$parent.$index <= 2">
-                <tr class="times-subline" ng-repeat="time in robot.times.slice(0,2) track by $index">
+                <tr class="times-subline" ng-repeat="time in main.bestRobotTimes(robot).slice(0,2) track by $index">
                   <td class="time-number">{{$index + 1}}</td>
                   <td align="left">{{main.prettyTime(time)}}</td>
                 </tr>
                 <tr class="score-subline">
                   <td class="time-number">Puntos: </td>
-                  <td align="left">{{main.calculateScore(robot)}} pts</td>
+                  <td align="left">{{main.racePlusScore(robot)}} pts</td>
                 </tr>
               </table>
-              <span align="left" ng-if="$parent.$index > 2"> {{ main.prettyTime(robot.times[main.bestTimeIndex(robot)]) }} </span>
-              <span class="mini-score" align="left" ng-if="$parent.$index > 2"> {{ main.calculateScore(robot) }} pts</span>
+              <span align="left" ng-if="$parent.$index > 2"> {{ main.prettyTime(main.bestRobotTimes(robot)[0]) }} </span>
+              <span class="mini-score" align="left" ng-if="$parent.$index > 2"> {{ main.racePlusScore(robot) }} pts</span>
             </td>
           </tr>
-
-          <tr class="ranking-line pos-{{$index}}" ng-if="main.categoryId >=4" ng-repeat="robot in main.ranking track by $index">
+          <tr class="ranking-line pos-{{$index}}" ng-if="(main.isTourneyCategory(main.categorySlug) && !main.isRaceCategory(main.categorySlug)) ||
+          (main.isTourneyCategory(main.categorySlug) && main.tourneyStarted)"
+          ng-repeat="robot in rankingSort(main.aliveRobots(main.robots), 'tourneyScore').slice(0,main.categoryRankingSize) track by $index">
             <td class="ranking-number">{{$index + 1}}</td>
             <td class="ranking-name">
               <table>
                 <tr>
                   <td ng-class="{'small-name': $index > 2 }">{{ robot.name }}
-                    <i ng-if="robot.combatInfo.eliminated" class="recycle icon-color fas fa-times"></i>
-                    <i ng-if="robot.combatInfo.dropOut" class="original icon-color fas fa-times"></i>
+                    <i ng-if="main.tourneyScore(robot).dropped" class="original icon-color fas fa-times"></i>
                   </td>
                 </tr>
                 <tr>
                   <td ng-if="$parent.$index <= 2" class="ranking-icons">
-                    <span>G: {{robot.combatInfo.won}} / P: {{robot.combatInfo.lost}} / E: {{robot.combatInfo.draw}}</span>
+                    <span>G: {{!main.tourneyScore(robot).won ? 0 : main.tourneyScore(robot).won}} 
+                      / P: {{!main.tourneyScore(robot).lost ? 0 : main.tourneyScore(robot).lost}} 
+                      / E: {{!main.tourneyScore(robot).draw ? 0 : main.tourneyScore(robot).draw}}</span>
                   </td>
                 </tr>
               </table>
             </td>
-            <td class="ranking-times"> {{ main.calculateCombatScore(robot) }} pts </td>
+            <td class="ranking-times"> {{ !main.tourneyScore(robot).currentScore ? 0 : main.tourneyScore(robot).currentScore }} pts </td>
           </tr>
 
         </tbody>

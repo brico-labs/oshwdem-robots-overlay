@@ -1,0 +1,10 @@
+<h3>Stop Race</h3>
+<hr>
+<p>Seguro que quieres parar la carrera {{ngDialogData.categoryTitle}}?</p>
+<p>Esta acción borrará todos los tiempos registrados y es irreversible.</p>
+<hr>
+<p class="text-right">
+  <button class="inline btn btn-danger" ng-click="closeThisDialog()">No</button>
+  <button class="inline btn btn-success" ng-click="rac.deleteRace(main.raceID, main.robots); closeThisDialog();
+  location.reload();">Yes</button>
+</p>

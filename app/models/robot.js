@@ -1,47 +1,42 @@
 // grab the packages that we need for the user model
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var Tourney = require('../models/tourney');
+var Race = require('../models/race');
 
-// robotTime schema
-var RobotTimeSchema = new Schema({
+var RobotSchema = new Schema();
+
+var RobotExtraSchema = new Schema({
+  bestRecycled: { type: Boolean },
+  bestOriginal: { type: Boolean },
+  bestOnlineDocs: { type: Boolean }
+});
+
+var TourneyScoreSchema = new Schema({
+  tourney: {type: mongoose.Schema.Types.ObjectId, ref: 'Tourney'},
+  currentScore: { type: Number},
+  trajectory: { type: Number },
+  dropped: {type : Boolean },
+  won : {type : Number},
+  lost : {type : Number},
+  draw : {type : Number},
+  defeated : [{type: mongoose.Schema.Types.ObjectId, ref: 'Robot'}]
+});
+
+var RaceTimeSchema = new Schema({
+  race: { type: mongoose.Schema.Types.ObjectId, ref: 'Race'},
   minutes: { type: Number, required: true },
   seconds: { type: Number, required: true },
   miliseconds: {type: Number, required: true }
 });
 
-// robotExtra schema
-var RobotExtraSchema = new Schema({
-  recycled: { type: Boolean },
-  original: { type: Boolean },
-  onlineDocs: { type: Boolean },
-  retweetCount: { type: Number },
-  twitter: { type: Boolean }
-});
-
-// robotCombat schema
-var RobotCombatSchema = new Schema({
-  played: { type: Number },
-  won: { type: Number },
-  lost: { type: Number },
-  draw: { type: Number },
-  eliminated: { type: Boolean},
-  dropOut: {type: Boolean}
-});
-
-// robot schema
-var RobotSchema = new Schema({
+RobotSchema.add({
   name: { type: String, required: true },
-  category: { type: Number, required: true },
-  // Categories are indexed for flexibility
-  // 1 is Laberinto
-  // 2 is Siguelineas
-  // 3 is Velocistas
-  // 4 is Sumo
-  // 5 is Hebocon
-  // 6 is Combate
-  times: [RobotTimeSchema],
-  extra: RobotExtraSchema,
-  combatInfo: RobotCombatSchema
+  category: { type: String, required: true },
+  hasDocumentation: {type: Boolean, required: true},
+  scores: [TourneyScoreSchema],
+  times: [RaceTimeSchema],
+  extra: RobotExtraSchema
 });
 
 RobotSchema.index({ "name" : 1, "category" : 1 }, { unique : true })

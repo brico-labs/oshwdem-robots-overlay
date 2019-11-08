@@ -1,0 +1,13 @@
+<h3>Carrera {{ main.categoryTitle }}</h3>
+<hr>
+<p>
+¿Desea inscribir a todos los robots y empezar la carrera {{ main.categoryTitle }}?
+</p>
+<hr>
+<p class="text-right">
+  <button class="inline btn btn-danger" ng-click="closeThisDialog()">Cancel</button>
+  <button class="inline btn btn-primary"
+  ng-click="rac.createRace(main.categorySlug, main.robots);closeThisDialog();location.reload();">
+  Begin
+  </button>
+</p>

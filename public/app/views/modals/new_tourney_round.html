@@ -1,0 +1,9 @@
+<h3>Siguiente Ronda</h3>
+<hr>
+<p>Generar siguientes cruces del torneo {{ngDialogData.categoryTitle}}?</p>
+<p>Por favor, confirma los resultados de la ronda actual, esta acción es irreversible.</p>
+<hr>
+<p class="text-right">
+  <button class="inline btn btn-danger" ng-click="closeThisDialog()">No</button>
+  <button class="inline btn btn-success" ng-click="trn.pairRound(main.tourney, main.robots); closeThisDialog();">Yes</button>
+</p>

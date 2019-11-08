@@ -1,0 +1,10 @@
+<h3>Cancel Tourney</h3>
+<hr>
+<p>Seguro que quieres parar el torneo {{ngDialogData.categoryTitle}}?</p>
+<p>Esta acción borrará todos los resultados registrados y es irreversible.</p>
+<hr>
+<p class="text-right">
+  <button class="inline btn btn-danger" ng-click="closeThisDialog()">No</button>
+  <button class="inline btn btn-success" ng-click="trn.deleteTourney(main.tourneyID, main.robots);
+  closeThisDialog();location.reload();">Yes</button>
+</p>
