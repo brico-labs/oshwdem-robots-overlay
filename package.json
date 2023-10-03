@@ -23,7 +23,7 @@
   },
   "scripts": {
     "postinstall": "bower install",
-    "prestart": "gulp css",
+    "prestart": "gulp css copy-css",
     "start": "gulp start"
   }
 }

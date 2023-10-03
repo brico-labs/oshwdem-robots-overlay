@@ -135,6 +135,7 @@ module.exports = function(app, express) {
 		tourney.category = req.body.category;
 		tourney.system = req.body.system;
 		tourney.robots = req.body.robots;
+		tourney.seeded = req.body.seeded;
 		tourney.rounds = []
 
 		tourney.save(function(err) {
@@ -157,22 +158,28 @@ module.exports = function(app, express) {
 		})
 	})
 	.put(function(req, res){
-		Tourney.findById(req.params.tourney_id, function(err, tourney) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t update tourney' });
-			if (req.body.robots) tourney.robots = req.body.robots;
-			if (req.body.rounds) tourney.rounds = req.body.rounds;
-			tourney.save(function(err) {
-				if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t save tourney' });
-				res.json({ success: true, message: tourney });
-			});
-		});
+		Tourney
+		.findOneAndUpdate({ _id: req.params.tourney_id }, req.body)
+		.exec(function(err, tourney){
+			if(err) return res.json({ success: false, error: err.code, message: 'Couldn\'t save tourney' });
+			res.json({ success: true, message: tourney })
+    	});
 	})
 	.delete(function(req, res) {
-		Tourney.remove({
-			_id: req.params.tourney_id
-		}, function(err, tourney) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t delete tourney' });
-			res.json({ success: true });
+		Tourney.findOne({ _id: req.params.tourney_id }).populate('robots').exec(function(err, tourney) {
+			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get tourney' });
+			tourney.robots.forEach(rob => {
+				if (rob.scores){
+					rob.scores = [];
+					rob.save();
+				}
+			});
+			Tourney.remove({
+				_id: req.params.tourney_id
+			}, function(err, tourney) {
+				if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t delete tourney' });
+				res.json({ success: true });
+			});
 		});
 	});
 
