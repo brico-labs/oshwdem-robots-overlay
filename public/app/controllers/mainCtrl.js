@@ -311,9 +311,12 @@ angular.module('mainCtrl', [])
 
 	vm.racePlusScore = function(robot){
 		score = 0;
-		if (robot.extra.bestRecycled) score = score+5;
-		if (robot.extra.bestOriginal) score = score+5;
-		if (robot.extra.bestOnlineDocs) score = score+6;
+		if (Object.hasOwn(robot, 'extra')){
+			if (robot.extra.bestRecycled) score = score+5;
+			if (robot.extra.bestOriginal) score = score+5;
+			if (robot.extra.bestOnlineDocs) score = score+6;
+		}
+		
 		score += robot.times.length * 2;
 
 		if (robot.times.length > 0){
@@ -364,10 +367,10 @@ angular.module('mainCtrl', [])
 			default:
 				return;
 		}
-
+		
 		robot.extra[bf] = !robot.extra[bf];
 		// If marking a robot as new best, unmark the rest
-		if(robot.extra[bf]){
+		if(Object.hasOwn(robot, 'extra') && robot.extra[bf]){
 			vm.robots.forEach(rob => {
 				if (rob._id != robot._id && rob.extra[bf]){
 					rob.extra[bf] = false;
