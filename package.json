@@ -22,7 +22,7 @@
     "gulp-nodemon": "*"
   },
   "scripts": {
-    "postinstall": "bower install",
+    "postinstall": "bower install --allow-root",
     "prestart": "gulp css copy-css",
     "start": "gulp start"
   }
