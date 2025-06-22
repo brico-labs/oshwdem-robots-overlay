@@ -19,7 +19,21 @@ app.use(function(req, res, next) {
 
 app.use(morgan('dev'));
 
-mongoose.connect(config.database);
+// Retry mongo connection function
+const connectWithRetry = () => {
+  mongoose.connect(config.database, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('MongoDB connected successfully'))
+  .catch(err => {
+    console.error('MongoDB connection unsuccessful, retrying in 5 seconds...', err);
+    setTimeout(connectWithRetry, 5000); // Retry after 5 seconds
+  });
+};
+
+// Call the retry connection
+connectWithRetry();
 
 var apiRoutes = require('./app/routes/api')(app, express);
 app.use('/api', apiRoutes);
@@ -33,5 +47,5 @@ app.get('*', function(req, res) {
 	res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
 });
 
-app.listen(config.port);
-console.log('Magic happens on port ' + config.port);
+app.listen(config.port, config.url);
+console.log('Magic happens at '+ config.url +' on port ' + config.port);

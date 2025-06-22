@@ -26,6 +26,7 @@ TourneySchema.add({
   robots: [{type: mongoose.Schema.Types.ObjectId, ref: 'Robot'}],
   category: { type: String, required: true },
   system: {type: String, required: true },
+  seeded: {type: Boolean, required: true },
   rounds: [TourneyRoundSchema]
 });
 

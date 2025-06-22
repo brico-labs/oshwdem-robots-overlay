@@ -1,6 +1,6 @@
 {
   "name": "robots_overlay_app",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "",
   "main": "server.js",
   "dependencies": {
@@ -22,8 +22,8 @@
     "gulp-nodemon": "*"
   },
   "scripts": {
-    "postinstall": "bower install",
-    "prestart": "gulp css",
+    "postinstall": "bower install --allow-root",
+    "prestart": "gulp css copy-css",
     "start": "gulp start"
   }
 }
