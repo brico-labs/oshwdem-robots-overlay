@@ -20,19 +20,16 @@ app.use(function(req, res, next) {
 app.use(morgan('dev'));
 
 // Retry mongo connection function
-const connectWithRetry = () => {
-  mongoose.connect(config.database, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => {
+const connectWithRetry = async () => {
+  try {
+    await mongoose.connect(config.database);
+    console.log('MongoDB connected successfully');
+  } catch (err) {
     console.error('MongoDB connection unsuccessful, retrying in 5 seconds...', err);
-    setTimeout(connectWithRetry, 5000); // Retry after 5 seconds
-  });
+    setTimeout(connectWithRetry, 5000);
+  }
 };
 
-// Call the retry connection
 connectWithRetry();
 
 var apiRoutes = require('./app/routes/api')(app, express);
@@ -43,7 +40,7 @@ app.use(express.static(__dirname + '/public'));
 // MAIN CATCHALL ROUTE ---------------
 // SEND USERS TO FRONTEND ------------
 // has to be registered after API ROUTES
-app.get('*', function(req, res) {
+app.get('/{*any}', function(req, res) {
 	res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
 });
 

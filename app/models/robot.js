@@ -44,10 +44,6 @@ RobotSchema.index({ "name" : 1, "category" : 1 }, { unique : true })
 // return the model
 var Robot = module.exports = mongoose.model('Robot', RobotSchema);
 
-Robot.ensureIndexes(function (err) {
-  if (err) console.log(err)
-})
-
 Robot.on('index', function (err) {
   if (err) console.log(err)
 })

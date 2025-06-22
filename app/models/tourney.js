@@ -35,10 +35,6 @@ TourneySchema.index({ "category" : 1, "system": 1 }, { unique : true })
 // return the model
 var Tourney = module.exports = mongoose.model('Tourney', TourneySchema);
 
-Tourney.ensureIndexes(function (err) {
-  if (err) console.log(err)
-})
-
 Tourney.on('index', function (err) {
   if (err) console.log(err)
 })

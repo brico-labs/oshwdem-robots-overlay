@@ -26,109 +26,92 @@ module.exports = function(app, express) {
 		robot.hasDocumentation = false;
 		robot.scores = []
 		robot.times = []
-		if (req.body.extra){
+		if (req.body.extra) {
 			robot.extra = req.body.extra;
 		}
-		robot.save(function(err) {
-			if (err) {
-				// duplicate entry
-				if (err.code == 11000)
-					return res.json({ success: false, error: err.code, message: 'A robot with that name already exists in that category.'});
+
+		robot.save()
+			.then(() => res.json({ success: true, message: robot }))
+			.catch(err => {
+				if (err.code === 11000)
+					return res.json({ success: false, error: err.code, message: 'A robot with that name already exists in that category.' });
 				else
 					return res.send(err);
-			}
-		res.json({ success: true, message: robot });
-		})
+			});
 	})
 	.get(function(req, res) {
-		Robot.find(function(err, robots) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robots' });
-			// return the users
-			res.json({ success: true, message: robots });
-		});
+		Robot.find()
+			.then(robots => res.json({ success: true, message: robots }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'couldn\'t get robots' }));
 	});
 
 	// Routes for Individual Robot Management
 	apiRouter.route('/robots/:robot_id')
 	.get(function(req, res) {
 		if (req.query.category != undefined) {
-			Robot.findOne({ 'name' : req.params.robot_id, 'category' : req.query.category}, function(err, robot){
-				if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robot' });
-				// return that robot
-				res.json({ success: true, message: robot });
-			});
+			Robot.findOne({ name: req.params.robot_id, category: req.query.category })
+				.then(robot => res.json({ success: true, message: robot }))
+				.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t get robot' }));
 		} else {
-			Robot.findById(req.params.robot_id, function(err, robot) {
-				//if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robot' });
-				if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robot' });
-				// return that robot
-				res.json({ success: true, message: robot });
-			});
+			Robot.findById(req.params.robot_id)
+				.then(robot => res.json({ success: true, message: robot }))
+				.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t get robot' }));
 		}
 	})
 	.put(function(req, res) {
-		Robot.findById(req.params.robot_id, function(err, robot) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t update robot' });
-			//update the robot info only if its new
-			if (req.body.name) robot.name = req.body.name;
-			if (req.body.category) robot.category = req.body.category;
-			if (req.body.hasDocumentation != undefined) robot.hasDocumentation = req.body.hasDocumentation;
-			if (req.body.scores) robot.scores = req.body.scores;
-			if (req.body.times) robot.times = req.body.times;
-			if (req.body.extra) robot.extra = req.body.extra;
-			// save the robot
-			robot.save(function(err) {
-				if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t save robot' });
-				// return a message
-				res.json({ success: true, message: robot });
-			});
-		});
+		Robot.findById(req.params.robot_id)
+			.then(robot => {
+				if (!robot) return res.json({ success: false, message: 'Robot not found' });
+
+				if (req.body.name) robot.name = req.body.name;
+				if (req.body.category) robot.category = req.body.category;
+				if (req.body.hasDocumentation !== undefined) robot.hasDocumentation = req.body.hasDocumentation;
+				if (req.body.scores) robot.scores = req.body.scores;
+				if (req.body.times) robot.times = req.body.times;
+				if (req.body.extra) robot.extra = req.body.extra;
+
+				return robot.save();
+			})
+			.then(updatedRobot => res.json({ success: true, message: updatedRobot }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t update robot' }));
 	})
-	.delete(function(req, res) {
-		Robot.remove({
-			_id: req.params.robot_id
-		}, function(err, user) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t delete robot' });
-			res.json({ success: true });
-		});
+
+    .delete(function(req, res) {
+        Robot.deleteOne({ _id: req.params.robot_id })
+            .then(() => res.json({ success: true }))
+            .catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t delete robot' }));
 	});
 
 	// Routes for Robot Category Management
 	apiRouter.route('/category/:category_name/robots')
-	.get(function(req, res) {
-		Robot.find({'category' : req.params.category_name}, function(err, robots) {
-			//if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robot' });
-		if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get robots' });
-			// return that robot
-			res.json({ success: true, message: robots });
-		});
+    .get(function(req, res) {
+        Robot.find({ category: req.params.category_name })
+			.then(robots => res.json({ success: true, message: robots }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t get robots' }));
 	});
 
 	apiRouter.route('/category/:category_name/tourneys')
 	.get(function(req, res){
-		Tourney.find({'category' : req.params.category_name}, function(err, tourneys){
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get tourneys' });
-			// return that robot
-			res.json({ success: true, message: tourneys });
-		}).populate('rounds.matches.robotA').populate('rounds.matches.robotB').populate('rounds.matches.winner');
+		Tourney.find({ category: req.params.category_name })
+			.populate('rounds.matches.robotA')
+			.populate('rounds.matches.robotB')
+			.populate('rounds.matches.winner')
+			.then(tourneys => res.json({ success: true, message: tourneys }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t get tourneys' }));
 	});
 
 	apiRouter.route('/category/:category_name/races')
 	.get(function(req, res){
-		Race.find({'category' : req.params.category_name}, function(err, races){
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get races' });
-			// return that robot
-			res.json({ success: true, message: races });
-		});
+		Race.find({ category: req.params.category_name })
+			.then(races => res.json({ success: true, message: races }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t get races' }));
 	});
 
 	apiRouter.route('/tourneys')
 	.get(function(req, res){
-		Tourney.find(function(err, tourneys) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get tourneys' });
-			// return the users
-			res.json({ success: true, message: tourneys });
-		});
+        Tourney.find()
+			.then(tourneys => res.json({ success: true, message: tourneys }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t get tourneys' }));
 	})
 	.post(function(req, res){
 		var tourney = new Tourney();
@@ -138,103 +121,90 @@ module.exports = function(app, express) {
 		tourney.seeded = req.body.seeded;
 		tourney.rounds = []
 
-		tourney.save(function(err) {
-			if (err) {
-				// duplicate entry
-				if (err.code == 11000)
-					return res.json({ success: false, error: err.code, message: 'A tourney for that category and system already exists'});
+		tourney.save()
+			.then(() => res.json({ success: true, message: tourney }))
+			.catch(err => {
+				if (err.code === 11000)
+					return res.json({ success: false, error: err.code, message: 'A tourney for that category and system already exists' });
 				else
 					return res.send(err);
-			}
-		res.json({ success: true, message: tourney });
-		})
+			});
 	});
 
 	apiRouter.route('/tourneys/:tourney_id')
-	.get(function(req, res){
-		Tourney.findById(req.params.tourney_id, function(err, tourney) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get tourney' });
-			res.json({ success: true, message: tourney });
+    .get(function(req, res) {
+		Tourney.findById(req.params.tourney_id)
+			.then(tourney => res.json({ success: true, message: tourney }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t get tourney' }));
+    })
+    .put(function(req, res) {
+        Tourney.findOneAndUpdate({ _id: req.params.tourney_id }, req.body, { new: true })
+			.then(tourney => res.json({ success: true, message: tourney }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t save tourney' }));
+    })
+    .delete(function(req, res) {
+        Tourney.findOne({ _id: req.params.tourney_id }).populate('robots').exec()
+			.then(tourney => {
+				if (!tourney) throw new Error('Tourney not found');
+
+				const promises = tourney.robots.map(rob => {
+					if (rob.scores) {
+						rob.scores = [];
+						return rob.save();
+					}
+					return Promise.resolve();
+			});
+
+	        return Promise.all(promises).then(() => Tourney.deleteOne({ _id: req.params.tourney_id }));
 		})
-	})
-	.put(function(req, res){
-		Tourney
-		.findOneAndUpdate({ _id: req.params.tourney_id }, req.body)
-		.exec(function(err, tourney){
-			if(err) return res.json({ success: false, error: err.code, message: 'Couldn\'t save tourney' });
-			res.json({ success: true, message: tourney })
-    	});
-	})
-	.delete(function(req, res) {
-		Tourney.findOne({ _id: req.params.tourney_id }).populate('robots').exec(function(err, tourney) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get tourney' });
-			tourney.robots.forEach(rob => {
-				if (rob.scores){
-					rob.scores = [];
-					rob.save();
-				}
-			});
-			Tourney.remove({
-				_id: req.params.tourney_id
-			}, function(err, tourney) {
-				if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t delete tourney' });
-				res.json({ success: true });
-			});
-		});
-	});
+        .then(() => res.json({ success: true }))
+        .catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t delete tourney' }));
+    });
 
 	//************ RACES */
 
 	apiRouter.route('/races')
-	.get(function(req, res){
-		Races.find(function(err, races) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get races' });
-			// return the users
-			res.json({ success: true, message: races });
-		});
-	})
+    .get(function(req, res) {
+		Race.find()
+			.then(races => res.json({ success: true, message: races }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t get races' }));
+    })
 	.post(function(req, res){
 		var race = new Race();
 		race.category = req.body.category;
 		race.robots = req.body.robots;
 
-		race.save(function(err) {
-			if (err) {
-				// duplicate entry
-				if (err.code == 11000)
-					return res.json({ success: false, error: err.code, message: 'A race for that category already exists'});
+		race.save()
+			.then(() => res.json({ success: true, message: race }))
+			.catch(err => {
+				if (err.code === 11000)
+					return res.json({ success: false, error: err.code, message: 'A race for that category already exists' });
 				else
 					return res.send(err);
-			}
-		res.json({ success: true, message: race });
-		})
+			});
 	});
 
 	apiRouter.route('/races/:race_id')
-	.get(function(req, res){
-		Race.findById(req.params.race_id, function(err, race) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t get race' });
-			res.json({ success: true, message: race });
-		});
+	.get(function(req, res) {
+		Race.findById(req.params.race_id)
+			.then(race => res.json({ success: true, message: race }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t get race' }));
 	})
-	.put(function(req, res){
-		Race.findById(req.params.race_id, function(err, race) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t update race' });
-			if (req.body.robots) race.robots = req.body.robots;
-			race.save(function(err) {
-				if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t save race' });
-				res.json({ success: true, message: race });
-			});
-		});
-	})
-	.delete(function(req, res) {
-		Race.remove({
-			_id: req.params.race_id
-		}, function(err, race) {
-			if (err) return res.json({ success: false, error: err.code, message: 'Couldn\'t delete race' });
-			res.json({ success: true });
-		});
-	});
+    .put(function(req, res) {
+        Race.findById(req.params.race_id)
+		    .then(race => {
+				if (!race) return res.json({ success: false, message: 'Race not found' });
+				if (req.body.robots) race.robots = req.body.robots;
+				return race.save();
+			})
+			.then(updatedRace => res.json({ success: true, message: updatedRace }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t update race' }));
+    })
+    .delete(function(req, res) {
+		Race.deleteOne({ _id: req.params.race_id })
+			.then(() => res.json({ success: true }))
+			.catch(err => res.json({ success: false, error: err.code, message: 'Couldn\'t delete race' }));
+    });
 
-  return apiRouter;
+    return apiRouter;
 }
