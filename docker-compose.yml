@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    container_name: oshwdem-robots-overlay
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      - PORT=8080
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - MONGO_DB=oshwdem_test
+    networks:
+      - internal_net
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    volumes:
+      - ./mongo-data:/data/db
+    networks:
+      - internal_net
+    restart: unless-stopped
+
+networks:
+  internal_net:
+    driver: bridge

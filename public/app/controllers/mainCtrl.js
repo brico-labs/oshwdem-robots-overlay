@@ -132,7 +132,7 @@ angular.module('mainCtrl', [])
 		})
 	}
 
-	vm.createTourneyDialog = function(topCut, sortFeature, $event){
+	vm.createTourneyDialog = function(topCut, sortFeature, seeded, $event){
 		var dialog = ngDialog.open({
 			template: 'app/views/modals/create_tourney.html',
 			scope : $scope,
@@ -141,7 +141,8 @@ angular.module('mainCtrl', [])
 			data : {
 				robotCount : vm.robots.length,
 				selectTopCut : topCut,
-				sortFeature : sortFeature
+				sortFeature : sortFeature,
+				isSeeded : seeded
 			}
 		})
 	}
@@ -310,9 +311,12 @@ angular.module('mainCtrl', [])
 
 	vm.racePlusScore = function(robot){
 		score = 0;
-		if (robot.extra.bestRecycled) score = score+5;
-		if (robot.extra.bestOriginal) score = score+5;
-		if (robot.extra.bestOnlineDocs) score = score+6;
+		if (Object.hasOwn(robot, 'extra')){
+			if (robot.extra.bestRecycled) score = score+5;
+			if (robot.extra.bestOriginal) score = score+5;
+			if (robot.extra.bestOnlineDocs) score = score+6;
+		}
+		
 		score += robot.times.length * 2;
 
 		if (robot.times.length > 0){
@@ -363,10 +367,10 @@ angular.module('mainCtrl', [])
 			default:
 				return;
 		}
-
+		
 		robot.extra[bf] = !robot.extra[bf];
 		// If marking a robot as new best, unmark the rest
-		if(robot.extra[bf]){
+		if(Object.hasOwn(robot, 'extra') && robot.extra[bf]){
 			vm.robots.forEach(rob => {
 				if (rob._id != robot._id && rob.extra[bf]){
 					rob.extra[bf] = false;
@@ -398,7 +402,10 @@ angular.module('mainCtrl', [])
 	vm.robotDropped = function(robot){
 		robot.scores.filter(rs => rs.tourney == vm.tourneyID);
 		score = robot.scores[0];
-		return score.dropped;
+		if(score)
+			return score.dropped;
+		else
+			return false;
 	}
 
 	vm.pendingMatches = function(){
@@ -418,7 +425,8 @@ angular.module('mainCtrl', [])
 		if (!currentRound){
 			return [];
 		} 
-		return currentRound.matches;	
+		//return currentRound.matches.filter((match) => (match.robotA && match.robotB));
+		return currentRound.matches;
 	}
 
 	vm.dropRobot = function(robot){
