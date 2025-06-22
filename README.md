@@ -21,3 +21,11 @@ npm install -g nodemon bower gulp
 ```
 Even though the app is not meant for online use, config.js should be changed
 when running the app to avoid running into problems at the local network.
+
+To open the overlay, just point a browser to
+```
+http://<your_ip>:8080/overlay/<category-id>
+```
+
+The category-id parameter is the same as the categories in the management panel.
+

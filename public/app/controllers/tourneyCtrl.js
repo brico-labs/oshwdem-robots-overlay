@@ -17,7 +17,6 @@ angular.module('tourneyCtrl', [])
 	]
 
 	trn.recomSystem = function(robotCount, cut) {
-		console.log(robotCount, cut);
 		if (cut == -1) {
 			count = robotCount;
 		} else {
@@ -54,7 +53,8 @@ angular.module('tourneyCtrl', [])
 	trn.newTourney = {
 		system: "",
 		category: "",
-		cut: -1
+		cut: -1,
+		seeded : false
 	}
 
 	function shuffle(a) {
@@ -68,14 +68,34 @@ angular.module('tourneyCtrl', [])
 		return a;
 	}
 
-	trn.createTourney = function(category, system, robots, cut){
-		if (cut == undefined || cut == -1) cut = { 'number' : robots.length };
+	function serpentine(a){
+		const n = a.length;
+		const emparejamiento = [];
+
+		for (let i = 0; i < n / 2; i++) {
+			if (i % 2 === 0) {
+			// Para las rondas pares, emparejar desde el principio y el final de la lista
+			emparejamiento.push(a[i]);
+			emparejamiento.push(a[n - i - 1]);
+			} else {
+			// Para las rondas impares, emparejar desde el final y el principio de la lista
+			emparejamiento.push(a[n - i - 1]);
+			emparejamiento.push(a[i]);
+			}
+		}
+
+		return emparejamiento;
+	}
+
+	trn.createTourney = function(category, system, robots, cut, seeded){
+		if (cut == undefined || cut.number == -1 || cut == -1 ) cut = { 'number' : robots.length };
+		if (seeded == undefined) seeded = false;
 		cut = cut.number;
 		var aliveRobots = robots.slice(0, Math.min(cut, robots.length));
 		var droppedRobots = robots.slice(cut, robots.length);
 		var robotIDs = aliveRobots.map( rob => rob._id).slice(0, cut);
         if(system != "" && category != "" && robotIDs != []){
-			Tourney.create(category, system.slug, robotIDs)
+			Tourney.create(category, system.slug, robotIDs, seeded)
 				.then(function(ret){
 					if(!ret.data.success){
 						alert("Error creating tourney. " + ret.data.message);
@@ -119,30 +139,45 @@ angular.module('tourneyCtrl', [])
 		}
 	}
 
+	byeIfDropped = function(robot){
+		if (robot.bye) return robot;
+		if (robot.scores == undefined) return robot;
+		if(robot.scores[0].dropped) return {
+			_id : "bye",
+			bye : true,
+			name: "bye" 
+		}
+		else return robot;
+	}
+
 	calculateNewRobotScores = function(tourney, robots){
 		lastRound = tourney.rounds[tourney.rounds.length-1];
 		robots.forEach(rob => {
 			lastRound.matches.forEach(ma => {
 				if (ma.robotA && rob._id == ma.robotA._id || ma.robotB && rob._id == ma.robotB._id){
+					// Draw
 					if (!ma.winner){
 						rob.scores[0].currentScore += 1;
 						rob.scores[0].draw += 1;
 					} else {
-						if(ma.winner._id == rob._id){
-							rob.scores[0].currentScore += 3;
-							rob.scores[0].won += 1;
-							if (ma.robotA && ma.robotA._id == ma.winner._id){
-								if (ma.robotB){
-									rob.scores[0].defeated.push(ma.robotB._id);
+						// Check it wasn't a bye
+						if (ma.robotA && ma.robotB){
+							if(ma.winner._id == rob._id){
+								rob.scores[0].currentScore += 3;
+								rob.scores[0].won += 1;
+								if (ma.robotA && ma.robotA._id == ma.winner._id){
+									if (ma.robotB){
+										rob.scores[0].defeated.push(ma.robotB._id);
+									}
+								} else {
+									if (ma.robotA){
+										rob.scores[0].defeated.push(ma.robotA._id);
+									}
 								}
 							} else {
-								if (ma.robotA){
-									rob.scores[0].defeated.push(ma.robotA._id);
+								if (rob){
+									rob.scores[0].lost += 1;
 								}
-							}
-						} else {
-							if (rob){
-								rob.scores[0].lost += 1;
 							}
 						}
 					}
@@ -169,8 +204,8 @@ angular.module('tourneyCtrl', [])
 			matches: []
 		}
 		// When finished push an empty round and fuck it
-		var aliveRobots = robots.filter(rob => !rob.scores[0].dropped);
-		var robots = aliveRobots;
+		// Use dropped to assign instant victories, filtering leads to tourneys ending soon
+		// var aliveRobots = robots.filter(rob => !rob.scores[0].dropped);
 		if (tourney.system == 'league'){
 			if (tourney.rounds.length < 1){
 				aliveRobots.forEach( robA => {
@@ -200,27 +235,49 @@ angular.module('tourneyCtrl', [])
 					previousRound = tourney.rounds[tourney.rounds.length-1]
 					roundRobots = [];
 					previousRound.matches.forEach( ma => {
-						roundRobots.push(ma.winner)
+						roundRobots.push(byeIfDropped(ma.winner))
 					})
 				} else {
 					// Determine number of byes of first round
 					byes = Math.pow(2, Math.ceil(Math.log2(robots.length))) - robots.length;
-					// If 0 byes, proceed with a beautiful normal bracket
-					// If some byes, use first round to normalize bracket
-					roundRobots = shuffle(robots);
-					for (let index = 0; index < byes; index++) {
-						byeBot = {
-							_id : "bye" + index,
-							bye : true,
-							name: "bye" + index
+					if (!tourney.seeded){
+						roundRobots = shuffle(robots);
+						for (let index = 0; index < byes; index++) {
+							byeBot = {
+								_id : "bye" + index,
+								bye : true,
+								name: "bye" + index 
+							}
+							roundRobots.splice((index*2)+1, 0, byeBot);
 						}
-						roundRobots.splice((index*2)+1, 0, byeBot);
+					} else {
+						const n = robots.length;
+						const emparejamiento = [];
+						// Calcular el número de elementos nulos necesarios
+						const totalTorneo = Math.pow(2, Math.ceil(Math.log2(n)));
+						const numNulos = totalTorneo - n;
+						// Crear una lista de elementos nulos
+						var elementosNulos = [];
+						for (let i = 0; i < numNulos; i++) {
+							elementosNulos.push({
+								_id : "bye" + i,
+								bye : true,
+								name: "bye" + i 
+							});
+						}
+						const listaConNulos = robots.concat(elementosNulos);
+						const nl = listaConNulos.length;
+						for (let i = 0; i < nl/2; i++) {
+							emparejamiento.push(listaConNulos[i*2]);
+							emparejamiento.push(listaConNulos[(nl-1)-(i*2)]);
+						}
+						roundRobots = emparejamiento
 					}
 				}
 				for (let index = 1; index < roundRobots.length; index+=2) {
 					match = {
-						robotA: roundRobots[index-1],
-						robotB: roundRobots[index],
+						robotA: byeIfDropped(roundRobots[index-1]),
+						robotB: byeIfDropped(roundRobots[index]),
 						winner: undefined,
 						resultA: 0,
 						resultB: 0,
@@ -242,6 +299,8 @@ angular.module('tourneyCtrl', [])
 			}
 		}
 		if (tourney.system == 'elim-double'){
+			// There's some issue here with losers having an extra round for certain counts
+			// of robots, which place the loser way higher since they have an extra bye
 			// Check special case bracket reset
 			// This also accounts for loser matches
 			winnersFinalRound = Math.ceil(Math.log2(robots.length));
@@ -287,19 +346,43 @@ angular.module('tourneyCtrl', [])
 				if (tourney.rounds.length == 0){
 					// First round we even the bracket with byes
 					byes = Math.pow(2, Math.ceil(Math.log2(robots.length))) - robots.length;
-					roundRobots = shuffle(robots);
-					for (let index = 0; index < byes; index++) {
-						byeBot = {
-							_id : "bye" + index,
-							bye : true,
-							name: "bye" + index
+					if (!tourney.seeded){
+						roundRobots = shuffle(robots);
+						for (let index = 0; index < byes; index++) {
+							byeBot = {
+								_id : "bye" + index,
+								bye : true,
+								name: "bye" + index 
+							}
+							roundRobots.splice((index*2)+1, 0, byeBot);
 						}
-						roundRobots.splice((index*2)+1, 0, byeBot);
+					} else {
+						const n = robots.length;
+						const emparejamiento = [];
+						// Calcular el número de elementos nulos necesarios
+						const totalTorneo = Math.pow(2, Math.ceil(Math.log2(n)));
+						const numNulos = totalTorneo - n;
+						// Crear una lista de elementos nulos
+						var elementosNulos = [];
+						for (let i = 0; i < numNulos; i++) {
+							elementosNulos.push({
+								_id : "bye" + i,
+								bye : true,
+								name: "bye" + i 
+							});
+						}
+						const listaConNulos = robots.concat(elementosNulos);
+						const nl = listaConNulos.length;
+						for (let i = 0; i < nl/2; i++) {
+							emparejamiento.push(listaConNulos[i*2]);
+							emparejamiento.push(listaConNulos[(nl-1)-(i*2)]);
+						}
+						roundRobots = emparejamiento
 					}
 					for (let index = 1; index < roundRobots.length; index+=2) {
 						match = {
-							robotA: roundRobots[index-1],
-							robotB: roundRobots[index],
+							robotA: byeIfDropped(roundRobots[index-1]),
+							robotB: byeIfDropped(roundRobots[index]),
 							winner: undefined,
 							resultA: 0,
 							resultB: 0,
