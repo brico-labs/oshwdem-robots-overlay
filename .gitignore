@@ -6,3 +6,4 @@ public/assets/css/*.min.css
 */.DS_store
 */*/.DS_store
 config.js
+mongo-data

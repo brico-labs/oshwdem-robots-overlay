@@ -48,7 +48,7 @@
       </div>
       <div class="pull-right">
         <a ng-if="!main.tourneyStarted" class='btn btn-primary btn-raised' href="#" ng-click="main.newRobotDialog($event)">New Robot</a>
-        <a ng-if="!main.tourneyStarted && main.robots.length > 0" class='btn btn-success btn-raised' href="#" ng-click="main.createTourneyDialog(false, 'tourneyScore', $event)">Begin Tourney</a>
+        <a ng-if="!main.tourneyStarted && main.robots.length > 0" class='btn btn-success btn-raised' href="#" ng-click="main.createTourneyDialog(false, 'tourneyScore', false, $event)">Begin Tourney</a>
         <a ng-if="main.tourneyStarted" class='btn btn-danger btn-raised' href="#" ng-click="main.deleteTourneyDialog($event)">Cancel Tourney</a>
       </div>
       <div class="pull-right">
