@@ -1,7 +1,7 @@
 // load the plugins
 var gulp      = require('gulp');
 var less      = require('gulp-less');
-var minifyCSS = require('gulp-minify-css');
+var cleanCSS = require('gulp-clean-css');
 var nodemon = require('gulp-nodemon')
 var rename    = require('gulp-rename');
 
@@ -10,7 +10,7 @@ gulp.task('css', function() {
 	// grab the less file, process the LESS, save to style.css
 	return gulp.src('public/assets/css/style.less')
 		.pipe(less())
-		.pipe(minifyCSS())
+		.pipe(cleanCSS())
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(gulp.dest('public/assets/css'));
 });
