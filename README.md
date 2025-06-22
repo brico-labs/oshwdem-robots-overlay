@@ -29,3 +29,59 @@ http://<your_ip>:8080/overlay/<category-id>
 
 The category-id parameter is the same as the categories in the management panel.
 
+# Docker Compose Setup
+
+You can also run the app and MongoDB easily using Docker Compose.
+
+1. Make sure you have [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
+
+2. Use the following `docker-compose.yml` file to start the services:
+
+
+```yaml
+services:
+  oshwdem-robots-overlay:
+    image: bricolabs/oshwdem-robots-overlay:v0.1.2
+    container_name: oshwdem-robots-overlay
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      - PORT=8080
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - MONGO_DB=oshwdem_2025
+    networks:
+      - internal_net
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:6
+    container_name: mongo-overlay
+    volumes:
+      - ./mongo-data:/data/db
+    networks:
+      - internal_net
+    restart: unless-stopped
+
+networks:
+  internal_net:
+    driver: bridge
+```
+
+3. Run the following command in the directory containing the docker-compose.yml file:
+```bash
+docker-compose up -d
+```
+
+4. Access the app in your browser at http://localhost:8080.
+
+5. MongoDB data is persisted in the local `./mongo-data` folder.
+
+6. To stop and remove the containers, run:
+```bash
+docker-compose down
+```
+
+This setup makes it easy to run the entire stack without installing Node.js or MongoDB locally.
