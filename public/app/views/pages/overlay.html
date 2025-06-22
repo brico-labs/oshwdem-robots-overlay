@@ -22,7 +22,7 @@
                   <td align="left">{{main.prettyTime(time)}}</td>
                 </tr>
               </table>
-              <span align="left" ng-if="$parent.$index > 2"> {{ main.prettyTime(robot.times[main.bestTimeIndex(robot)]) }} </span>
+              <span align="left" ng-if="$parent.$index > 2"> {{ main.prettyTime(main.bestRobotTimes(robot)[0]) }} </span>
             </td>
           </tr>
           <tr class="ranking-line pos-{{$index}}" ng-if="main.isRaceCategory(main.categorySlug) && main.isRacePlus(main.categorySlug)" ng-repeat="robot in rankingSort(main.robots, 'score').slice(0,main.categoryRankingSize) track by $index">
