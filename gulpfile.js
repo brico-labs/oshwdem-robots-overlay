@@ -15,11 +15,16 @@ gulp.task('css', function() {
 		.pipe(gulp.dest('public/assets/css'));
 });
 
+gulp.task('copy-css', function() {
+  return gulp.src('node_modules/animate.css/animate.min.css')
+    .pipe(gulp.dest('public/assets/css'));
+});
+
 gulp.task('start', function () {
   nodemon({
     script: 'server.js'
   , ext: 'js html less'
-  , tasks: ['css']
+  , tasks: ['css', 'copy-css']
   , env: { 'NODE_ENV': 'development' }
   })
 });

@@ -11,9 +11,9 @@ angular.module('tourneyService', [])
         return $http.get('/api/category/'+category_id+'/tourneys')
     };
 
-    tourneyFactory.create = function(category, system, robots) {
-        var tourneyData = {'category' : category, 'robots' : robots, 'system' : system }
-        return $http.post('/api/tourneys/', tourneyData);
+    tourneyFactory.create = function(category, system, robots, seeded) {
+      var tourneyData = {'category' : category, 'robots' : robots, 'system' : system, 'seeded' : seeded }
+      return $http.post('/api/tourneys/', tourneyData);
     };
 
     tourneyFactory.delete = function(tourneyID) {
