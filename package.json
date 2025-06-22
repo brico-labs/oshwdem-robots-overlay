@@ -19,12 +19,11 @@
     "gulp": "^5.0.1",
     "gulp-clean-css": "^4.3.0",
     "gulp-cli": "^3.1.0",
-    "gulp-less": "^5.0.0",
-    "gulp-nodemon": "*"
+    "gulp-less": "^5.0.0"
   },
   "scripts": {
-    "postinstall": "bower install --allow-root",
-    "prestart": "gulp css copy-css",
-    "start": "gulp start"
+  "build": "gulp build",
+  "start": "nodemon server.js --watch server.js --watch public/assets/css/style.less",
+  "dev": "npm run build && npm run start"
   }
 }
