@@ -85,3 +85,5 @@ docker-compose down
 ```
 
 This setup makes it easy to run the entire stack without installing Node.js or MongoDB locally.
+
+It's also available on [Docker Hub](https://hub.docker.com/r/bricolabs/oshwdem-robots-overlay).
