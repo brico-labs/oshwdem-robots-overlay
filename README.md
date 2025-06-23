@@ -1,7 +1,7 @@
 # Oshwdem Robot Overlay
 
 Webapp to manage and track robot scores for Oshwdem 2017, allows tracking
-three different competitions: Siguelineas, Velocistas and Laberintos.
+six different competitions: Sumo, Combate, HEBOCON, Siguelíneas, Velocistas and Laberintos.
 
 Requires Node to handle dependencies and run the webserver for the app and
 MongoDB to store the data.
