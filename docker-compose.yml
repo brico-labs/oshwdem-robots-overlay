@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
 
   mongo:
-    image: mongo:6
+    image: mongo:7
     container_name: mongo
     volumes:
       - ./mongo-data:/data/db

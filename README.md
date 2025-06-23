@@ -41,7 +41,7 @@ You can also run the app and MongoDB easily using Docker Compose.
 ```yaml
 services:
   oshwdem-robots-overlay:
-    image: bricolabs/oshwdem-robots-overlay:v0.1.2
+    image: ghcr.io/brico-labs/oshwdem-robots-overlay:latest
     container_name: oshwdem-robots-overlay
     ports:
       - "8080:8080"
@@ -57,7 +57,7 @@ services:
     restart: unless-stopped
 
   mongo:
-    image: mongo:6
+    image: mongo:7
     container_name: mongo-overlay
     volumes:
       - ./mongo-data:/data/db
